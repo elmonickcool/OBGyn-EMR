@@ -1,54 +1,105 @@
-// import required modules
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 
-// create an instance of express
 const app = express();
 
-// set up middleware
+/* ================= MIDDLEWARE ================= */
 app.use(cors());
 app.use(express.json());
 
-// create a connection to the MySQL database
+/* ================= DATABASE ================= */
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: "medical_records",
 });
-// connect to the database
+
 db.connect((err) => {
   if (err) {
-    console.error("Error connecting to the database:", err);
+    console.error("Database connection failed:", err);
     return;
   }
-  console.log("Connected to the database");
+  console.log("Connected to database");
 });
 
-// get all patients
+/* ================= PATIENTS ================= */
+
+// GET all patients
 app.get("/patients", (req, res) => {
-    db.query("SELECT * FROM patients", (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: "Error fetching patients" });
-        }
-        res.json(results);
-    });
+  db.query("SELECT * FROM patients", (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
 });
 
-// get a patient by ID
+// GET patient by ID
 app.get("/patients/:id", (req, res) => {
-    const patientId = req.params.id;
+  db.query(
+    "SELECT * FROM patients WHERE patient_id = ?",
+    [req.params.id],
+    (err, results) => {
+      if (err) return res.status(500).json({ error: err.message });
 
-    db.query("SELECT * FROM patients WHERE patient_id = ?", [patientId], (err, results) => {
-        if(err) {
-            return res.status(500).json({ error: "Error fetching patient" });
-        }
-        res.json(results[0]);
-    });
+      if (!results.length) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
+
+      res.json(results[0]);
+    }
+  );
 });
 
-//start the server
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+// ADD patient
+app.post("/patients", (req, res) => {
+  const {
+    first_name,
+    last_name,
+    age,
+    birth_date,
+    address,
+    contact_num,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO patients
+    (first_name, last_name, age, birth_date, address, contact_num)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    sql,
+    [first_name, last_name, age, birth_date, address || null, contact_num],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      res.status(201).json({
+        message: "Patient added successfully",
+        patient_id: result.insertId,
+      });
+    }
+  );
+});
+
+/* ================= CONDITIONS ================= */
+
+app.get("/conditions", (req, res) => {
+  db.query("SELECT * FROM medical_conditions", (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
+/* ================= CONSULTATIONS ROUTES ================= */
+app.use("/consultations", require("./routes/consultation"));
+
+/* ================= MEDICAL HISTORY ROUTES ================= */
+app.use("/medical-history", require("./routes/medicalHistory"));
+
+/* ================= SERVER START ================= */
+const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
