@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Patients() {
   const [patients, setPatients] = useState([]);
@@ -35,6 +35,9 @@ function Patients() {
   return (
     <div className="container mt-4">
       <h1>Patient List</h1>
+      <Link to="/add-patient" className="btn btn-success mb-3">
+  + Add Patient
+</Link>
 
       <table className="table table-bordered mt-3">
         <thead>

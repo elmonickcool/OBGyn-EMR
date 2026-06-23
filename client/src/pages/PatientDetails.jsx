@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography, TextField, Paper } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
+import PatientTabs from "../components/PatientTabs";
 
 function PatientDetails() {
   const { id } = useParams();
@@ -8,6 +9,13 @@ function PatientDetails() {
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [tab, setTab] = useState(0);
+
+  const [form, setForm] = useState({
+    chief_complaint: "",
+    hpi: "",
+    notes: "",
+  });
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -17,9 +25,7 @@ function PatientDetails() {
 
         const res = await fetch(`http://localhost:3000/patients/${id}`);
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch patient data");
-        }
+        if (!res.ok) throw new Error("Failed to fetch patient data");
 
         const data = await res.json();
         setPatient(data);
@@ -33,71 +39,27 @@ function PatientDetails() {
     fetchPatient();
   }, [id]);
 
-  // Loading UI
-  if (loading) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography>Loading patient details...</Typography>
-      </Box>
-    );
-  }
-
-  // Error UI
-  if (error) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography color="error">{error}</Typography>
-      </Box>
-    );
-  }
-
-  // No data fallback
-  if (!patient) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography>No patient found</Typography>
-      </Box>
-    );
-  }
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (!patient) return <p>No patient found</p>;
 
   return (
-    <Box sx={{ maxWidth: 700, mx: "auto", p: 3 }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
-        {/* Header */}
+    <Box sx={{ maxWidth: 850, mx: "auto", p: 3 }}>
+      <Paper sx={{ p: 3 }}>
+
         <Typography variant="h4" gutterBottom>
-          Patient Details
+          Patient Record
         </Typography>
 
-        {/* Patient Info */}
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography>
-              <strong>ID:</strong> {patient.patient_id}
-            </Typography>
+        {/* 🔥 Reusable Tabs Component */}
+        <PatientTabs
+          patient={patient}
+          tab={tab}
+          setTab={setTab}
+          form={form}
+          setForm={setForm}
+        />
 
-            <Typography>
-              <strong>Date:</strong>{" "}
-              {patient.created_at
-                ? new Date(patient.created_at).toLocaleDateString()
-                : "N/A"}
-            </Typography>
-          </Box>
-
-          <Typography>
-            <strong>Name:</strong> {patient.first_name} {patient.last_name}
-          </Typography>
-
-          <Typography>
-            <strong>Age:</strong> {patient.age}
-          </Typography>
-        </Box>
-
-        {/* Consultation Section */}
-        <Typography variant="h5" gutterBottom>
-          Consultation
-        </Typography>
-
-        <TextField label="Chief Complaint" multiline rows={5} fullWidth />
       </Paper>
     </Box>
   );
