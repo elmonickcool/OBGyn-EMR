@@ -7,6 +7,7 @@ import HospitalizationTab from "./tabs/HospitalizationTab";
 import SurgeryTab from "./tabs/SurgeryTab";
 import AllergiesTab from "./tabs/AllergiesTab";
 import FamilyHistoryTab from "./tabs/FamilyHistoryTab";
+import SocialHistoryTab from "./tabs/SocialHistoryTab";
 
 function PatientTabs({ patient, tab, setTab, form, setForm }) {
   return (
@@ -24,6 +25,7 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
         <Tab label="Surgery" />
         <Tab label="Allergies" />
         <Tab label="Family History" />
+        <Tab label="Social History" />
       </Tabs>
 
       <TabPanel value={tab} index={0}>
@@ -52,6 +54,10 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
 
       <TabPanel value={tab} index={6}>
         <FamilyHistoryTab patient={patient} form={form} setForm={setForm} />
+      </TabPanel>
+
+      <TabPanel value={tab} index={7}>
+        <SocialHistoryTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
     </Box>
   );
