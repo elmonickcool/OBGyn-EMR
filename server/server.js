@@ -103,6 +103,9 @@ app.use("/hospitalizations", require("./routes/hospitalization"));
 /* ================= SURGERIES ROUTES ================= */
 app.use("/surgeries", require("./routes/surgeries"));
 
+/* ================= ALLERGIES ROUTES ================= */
+app.use("/allergies", require("./routes/allergies"));
+
 /* ================= SERVER START ================= */
 const PORT = 3000;
 
