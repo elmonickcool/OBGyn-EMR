@@ -1,12 +1,12 @@
 import { Box, Tabs, Tab } from "@mui/material";
 import TabPanel from "./TabPanel";
-import PatientInfoTab from "./PatientInfoTab";
-import ConsultationTab from "./ConsultationTab";
-import MedicalHistoryTab from "./MedicalHistoryTab";
-import HospitalizationTab from "./HospitalizationTab";
-import SurgeryTab from "./SurgeryTab";
-import AllergiesTab from "./AllergiesTab";
-import FamilyHistoryTab from "./FamilyHistoryTab";
+import PatientInfoTab from "./tabs/PatientInfoTab";
+import ConsultationTab from "./tabs/ConsultationTab";
+import MedicalHistoryTab from "./tabs/MedicalHistoryTab";
+import HospitalizationTab from "./tabs/HospitalizationTab";
+import SurgeryTab from "./tabs/SurgeryTab";
+import AllergiesTab from "./tabs/AllergiesTab";
+import FamilyHistoryTab from "./tabs/FamilyHistoryTab";
 
 function PatientTabs({ patient, tab, setTab, form, setForm }) {
   return (
