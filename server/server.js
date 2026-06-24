@@ -106,6 +106,9 @@ app.use("/surgeries", require("./routes/surgeries"));
 /* ================= ALLERGIES ROUTES ================= */
 app.use("/allergies", require("./routes/allergies"));
 
+/* ================= SOCIAL HISTORY ROUTES ================= */
+app.use("/social-history", require("./routes/socialHistory"));
+
 /* ================= SERVER START ================= */
 const PORT = 3000;
 
