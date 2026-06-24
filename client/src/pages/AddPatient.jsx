@@ -7,6 +7,7 @@ function AddPatient() {
     last_name: "",
     age: "",
     birth_date: "",
+    address: "",
     contact_num: "",
   });
 
@@ -129,6 +130,17 @@ function AddPatient() {
             className="form-control"
             value={form.age}
             readOnly
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Address</label>
+          <input
+            type="text"
+            name="address"
+            className="form-control"
+            value={form.address}
+            onChange={handleChange}
           />
         </div>
 

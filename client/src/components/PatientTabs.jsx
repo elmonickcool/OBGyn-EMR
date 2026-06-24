@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 import {
   Box,
   Typography,
@@ -41,7 +43,7 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
-        }
+        },
       );
 
       const data = await res.json();
@@ -68,21 +70,70 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
     try {
       await Promise.all(
         selectedConditions.map((condition_id) =>
-          fetch(
-            `http://localhost:3000/medical-history/${patient.patient_id}`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                condition_id,
-                remarks: form.remarks || "",
-              }),
-            }
-          )
-        )
+          fetch(`http://localhost:3000/medical-history/${patient.patient_id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              condition_id,
+              remarks: form.remarks || "",
+            }),
+          }),
+        ),
       );
 
       alert("Medical history saved!");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  /* ================= HOSPITALIZATION SAVE ================= */
+  const saveHospitalization = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/hospitalizations/${patient.patient_id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Failed to save");
+
+      alert("Hospitalization saved!");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  /* ================= SURGERY SAVE ================= */
+  const saveSurgery = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/surgeries/${patient.patient_id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            surgery_name: form.surgery_name,
+            surgery_date: form.surgery_date,
+            details: form.surgery_details,
+          }),
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to save surgery");
+      }
+
+      alert("Surgery record saved!");
     } catch (err) {
       alert(err.message);
     }
@@ -96,6 +147,8 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
         <Tab label="Consultation" />
         <Tab label="Notes" />
         <Tab label="Medical History" />
+        <Tab label="Hospitalization" />
+        <Tab label="Surgery" />
       </Tabs>
 
       {/* ================= PATIENT INFO ================= */}
@@ -105,6 +158,7 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
           Name: {patient.first_name} {patient.last_name}
         </Typography>
         <Typography>Age: {patient.age}</Typography>
+        <Typography>Address: {patient.address || "N/A"}</Typography>
         <Typography>Contact: {patient.contact_num || "N/A"}</Typography>
       </TabPanel>
 
@@ -131,7 +185,11 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
           onChange={(e) => setForm({ ...form, hpi: e.target.value })}
         />
 
-        <Button sx={{ mt: 2 }} variant="contained" onClick={handleSaveConsultation}>
+        <Button
+          sx={{ mt: 2 }}
+          variant="contained"
+          onClick={handleSaveConsultation}
+        >
           Save Consultation
         </Button>
       </TabPanel>
@@ -144,9 +202,7 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
           multiline
           rows={5}
           value={form.notes}
-          onChange={(e) =>
-            setForm({ ...form, notes: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, notes: e.target.value })}
         />
       </TabPanel>
 
@@ -176,17 +232,106 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
           rows={3}
           sx={{ mt: 2 }}
           value={form.remarks || ""}
+          onChange={(e) => setForm({ ...form, remarks: e.target.value })}
+        />
+
+        <Button sx={{ mt: 2 }} variant="contained" onClick={saveMedicalHistory}>
+          Save Medical History
+        </Button>
+      </TabPanel>
+      {/* ================= HOSPITALIZATION ================= */}
+      <TabPanel value={tab} index={4}>
+        <TextField
+          label="Hospitalization Details"
+          fullWidth
+          multiline
+          rows={4}
+          value={form.hospitalization_details || ""}
           onChange={(e) =>
-            setForm({ ...form, remarks: e.target.value })
+            setForm({ ...form, hospitalization_details: e.target.value })
           }
+        />
+        <DatePicker
+          label="Hospitalization Date"
+          value={
+            form.hospitalization_date ? dayjs(form.hospitalization_date) : null
+          }
+          onChange={(newValue) =>
+            setForm({
+              ...form,
+              hospitalization_date: newValue
+                ? newValue.format("YYYY-MM-DD")
+                : "",
+            })
+          }
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              sx: { mt: 2 },
+            },
+          }}
         />
 
         <Button
           sx={{ mt: 2 }}
           variant="contained"
-          onClick={saveMedicalHistory}
+          onClick={saveHospitalization}
         >
-          Save Medical History
+          Save Hospitalization
+        </Button>
+      </TabPanel>
+      {/* ================= SURGERY ================= */}
+      <TabPanel value={tab} index={5}>
+        <Typography variant="h6" gutterBottom>
+          Surgery Record
+        </Typography>
+
+        <TextField
+          label="Surgery Name"
+          fullWidth
+          value={form.surgery_name || ""}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              surgery_name: e.target.value,
+            })
+          }
+        />
+
+        <DatePicker
+          label="Surgery Date"
+          value={form.surgery_date ? dayjs(form.surgery_date) : null}
+          onChange={(newValue) =>
+            setForm({
+              ...form,
+              surgery_date: newValue ? newValue.format("YYYY-MM-DD") : "",
+            })
+          }
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              sx: { mt: 2 },
+            },
+          }}
+        />
+
+        <TextField
+          label="Details"
+          fullWidth
+          multiline
+          rows={4}
+          sx={{ mt: 2 }}
+          value={form.surgery_details || ""}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              surgery_details: e.target.value,
+            })
+          }
+        />
+
+        <Button variant="contained" sx={{ mt: 2 }} onClick={saveSurgery}>
+          Save Surgery
         </Button>
       </TabPanel>
     </Box>
