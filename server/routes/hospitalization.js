@@ -24,4 +24,24 @@ router.post('/:patientId', (req, res) => {
 });
 });
 
+router.get('/:patientId', (req, res) => {
+  const { patientId } = req.params;
+
+  const sql = `
+    SELECT *
+    FROM hospitalizations
+    WHERE patient_id = ?
+    ORDER BY hospitalization_date DESC
+  `;
+
+  db.query(sql, [patientId], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
 module.exports = router;

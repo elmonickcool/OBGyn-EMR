@@ -33,25 +33,39 @@ function MedicalHistoryTab({ patient, form, setForm }) {
   }, []);
 
   const saveMedicalHistory = useCallback(async () => {
+    if (selectedConditions.length === 0) {
+      alert("Please select at least one condition");
+      return;
+    }
+
     try {
-      await Promise.all(
-        selectedConditions.map((condition_id) =>
-          fetch(`http://localhost:3000/medical-history/${patient.patient_id}`, {
+      const results = await Promise.all(
+        selectedConditions.map(async (condition_id) => {
+          const res = await fetch(`http://localhost:3000/medical-history/${patient.patient_id}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               condition_id,
               remarks: form.remarks || "",
             }),
-          }),
-        ),
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || `Failed to save condition ${condition_id}`);
+          }
+
+          return res.json();
+        }),
       );
 
-      alert("Medical history saved!");
+      setSelectedConditions([]);
+      setForm({ ...form, remarks: "" });
+      alert(`Successfully saved ${results.length} condition(s)!`);
     } catch (err) {
-      alert(err.message);
+      alert(`Error: ${err.message}`);
     }
-  }, [patient.patient_id, form.remarks, selectedConditions]);
+  }, [patient.patient_id, form, selectedConditions]);
 
   return (
     <>

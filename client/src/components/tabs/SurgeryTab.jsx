@@ -4,6 +4,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 function SurgeryTab({ patient, form, setForm }) {
   const saveSurgery = async () => {
+    if (!form.surgery_name?.trim() || !form.surgery_date) {
+      alert("Please enter surgery name and date");
+      return;
+    }
+
     try {
       const res = await fetch(`http://localhost:3000/surgeries/${patient.patient_id}`, {
         method: "POST",
@@ -15,14 +20,17 @@ function SurgeryTab({ patient, form, setForm }) {
         }),
       });
 
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Failed to save surgery");
+        const data = await res.json();
+        throw new Error(data.error || `Failed to save surgery (HTTP ${res.status})`);
       }
 
-      alert("Surgery record saved!");
+      const data = await res.json();
+      setForm({ surgery_name: "", surgery_date: "", surgery_details: "" });
+      alert("Surgery record saved successfully!");
     } catch (err) {
-      alert(err.message);
+      alert(`Error: ${err.message}`);
+      console.error("Save surgery error:", err);
     }
   };
 

@@ -51,6 +51,41 @@ app.get("/patients/:id", (req, res) => {
   );
 });
 
+// UPDATE patient
+app.put("/patients/:id", (req, res) => {
+  const { first_name, last_name, age, birth_date, address, contact_num } = req.body;
+  const sql = `
+    UPDATE patients
+    SET first_name = ?, last_name = ?, age = ?, birth_date = ?, address = ?, contact_num = ?
+    WHERE patient_id = ?
+  `;
+
+  db.query(
+    sql,
+    [first_name, last_name, age, birth_date, address || null, contact_num, req.params.id],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
+
+      res.json({ message: "Patient updated successfully" });
+    }
+  );
+});
+
+// DELETE patient
+app.delete("/patients/:id", (req, res) => {
+  db.query("DELETE FROM patients WHERE patient_id = ?", [req.params.id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    res.json({ message: "Patient deleted successfully" });
+  });
+});
+
 // ADD patient
 app.post("/patients", (req, res) => {
   const {
@@ -108,6 +143,15 @@ app.use("/allergies", require("./routes/allergies"));
 
 /* ================= SOCIAL HISTORY ROUTES ================= */
 app.use("/social-history", require("./routes/socialHistory"));
+
+/* ================= FAMILY HISTORY ROUTES ================= */
+app.use("/family-history", require("./routes/familyHistory"));
+
+/* ================= GYNECOLOGIC HISTORY ROUTES ================= */
+app.use("/gynecologic-history", require("./routes/gynecologicHistory"));
+
+/* ================= REVIEW OF SYSTEMS ROUTES ================= */
+app.use("/review-of-systems", require("./routes/reviewOfSystems"));
 
 /* ================= SERVER START ================= */
 const PORT = 3000;

@@ -3,6 +3,11 @@ import { TextField, Button } from "@mui/material";
 
 function ConsultationTab({ patient, form, setForm }) {
   const handleSaveConsultation = useCallback(async () => {
+    if (!form.chief_complaint?.trim()) {
+      alert("Please enter a chief complaint");
+      return;
+    }
+
     try {
       const res = await fetch(
         `http://localhost:3000/consultations/${patient.patient_id}`,
@@ -16,9 +21,10 @@ function ConsultationTab({ patient, form, setForm }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to save");
 
-      alert("Saved successfully!");
+      alert("Consultation saved successfully!");
     } catch (err) {
-      alert(err.message);
+      alert(`Error: ${err.message}`);
+      console.error("Save consultation error:", err);
     }
   }, [form, patient.patient_id]);
 

@@ -5,33 +5,33 @@ const db = require("../db");
 router.post("/:patientId", (req, res) => {
   const { patientId } = req.params;
   const {
-    smoking,
-    sticks_per_day,
-    smoking_years,
-    alcohol,
-    alcohol_details,
-    illicit_drugs,
-    drug_details,
-    diet,
-    exercise,
-    living_situation,
-    exposure_history,
+    lmp,
+    menarche_age,
+    cycle_type,
+    cycle_duration,
+    dysmenorrhea,
+    gravidity,
+    parity,
+    abortion_count,
+    living_children,
+    delivery_type,
+    contraception,
   } = req.body;
 
   const sql = `
-    INSERT INTO social_history (
+    INSERT INTO gynecologic_history (
       patient_id,
-      smoking,
-      sticks_per_day,
-      smoking_years,
-      alcohol,
-      alcohol_details,
-      illicit_drugs,
-      drug_details,
-      diet,
-      exercise,
-      living_situation,
-      exposure_history
+      lmp,
+      menarche_age,
+      cycle_type,
+      cycle_duration,
+      dysmenorrhea,
+      gravidity,
+      parity,
+      abortion_count,
+      living_children,
+      delivery_type,
+      contraception
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
@@ -40,26 +40,26 @@ router.post("/:patientId", (req, res) => {
     sql,
     [
       patientId,
-      smoking || false,
-      sticks_per_day || null,
-      smoking_years || null,
-      alcohol || false,
-      alcohol_details || null,
-      illicit_drugs || false,
-      drug_details || null,
-      diet || null,
-      exercise || null,
-      living_situation || null,
-      exposure_history || null,
+      lmp || null,
+      menarche_age || null,
+      cycle_type || null,
+      cycle_duration || null,
+      dysmenorrhea || false,
+      gravidity || 0,
+      parity || 0,
+      abortion_count || 0,
+      living_children || 0,
+      delivery_type || null,
+      contraception || null,
     ],
     (err, result) => {
       if (err) {
-        console.error("Social history insert error:", err);
+        console.error("Gynecologic history insert error:", err);
         return res.status(500).json({ error: err.message });
       }
 
       res.status(201).json({
-        message: "Social history added",
+        message: "Gynecologic history added",
         id: result.insertId,
       });
     }
@@ -71,9 +71,9 @@ router.get("/:patientId", (req, res) => {
 
   const sql = `
     SELECT *
-    FROM social_history
+    FROM gynecologic_history
     WHERE patient_id = ?
-    ORDER BY social_history_id DESC
+    ORDER BY gyne_id DESC
     LIMIT 1
   `;
 

@@ -4,6 +4,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 function HospitalizationTab({ patient, form, setForm }) {
   const saveHospitalization = async () => {
+    if (!form.hospitalization_date) {
+      alert("Please select a hospitalization date");
+      return;
+    }
+
     try {
       const res = await fetch(`http://localhost:3000/hospitalizations/${patient.patient_id}`, {
         method: "POST",
@@ -11,12 +16,17 @@ function HospitalizationTab({ patient, form, setForm }) {
         body: JSON.stringify(form),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to save");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || `Failed to save (HTTP ${res.status})`);
+      }
 
-      alert("Hospitalization saved!");
+      const data = await res.json();
+      setForm({ hospitalization_details: "", hospitalization_date: "" });
+      alert("Hospitalization saved successfully!");
     } catch (err) {
-      alert(err.message);
+      alert(`Error: ${err.message}`);
+      console.error("Save hospitalization error:", err);
     }
   };
 

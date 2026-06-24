@@ -2,8 +2,10 @@ import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 
 import Patients from "./pages/Patients";
-import PatientDetails from "./pages/PatientDetails";
+import PatientProfile from "./pages/PatientProfile";
+import PatientForms from "./pages/PatientForms";
 import AddPatient from "./pages/AddPatient";
+import EditPatient from "./pages/EditPatient";
 
 function App() {
   return (
@@ -15,7 +17,9 @@ function App() {
         {/* Pages inside layout */}
         <Route index element={<Patients />} />
         <Route path="add-patient" element={<AddPatient />} />
-        <Route path="patients/:id" element={<PatientDetails />} />
+        <Route path="patients/:id" element={<PatientProfile />} />
+        <Route path="patients/:id/forms" element={<PatientForms />} />
+        <Route path="patients/:id/edit" element={<EditPatient />} />
 
       </Route>
 

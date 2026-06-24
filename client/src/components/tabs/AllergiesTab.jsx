@@ -2,6 +2,11 @@ import { TextField, Button, Typography, MenuItem } from "@mui/material";
 
 function AllergiesTab({ patient, form, setForm }) {
   const saveAllergy = async () => {
+    if (!form.allergy_type?.trim() || !form.allergy_name?.trim()) {
+      alert("Please enter allergy type and name");
+      return;
+    }
+
     try {
       const res = await fetch(`http://localhost:3000/allergies/${patient.patient_id}`, {
         method: "POST",
@@ -12,14 +17,17 @@ function AllergiesTab({ patient, form, setForm }) {
         }),
       });
 
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Failed to save allergy");
+        const data = await res.json();
+        throw new Error(data.error || `Failed to save allergy (HTTP ${res.status})`);
       }
 
+      const data = await res.json();
+      setForm({ allergy_type: "", allergy_name: "" });
       alert("Allergy saved successfully!");
     } catch (err) {
-      alert(err.message);
+      alert(`Error: ${err.message}`);
+      console.error("Save allergy error:", err);
     }
   };
 

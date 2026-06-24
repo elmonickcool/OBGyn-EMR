@@ -8,6 +8,8 @@ import SurgeryTab from "./tabs/SurgeryTab";
 import AllergiesTab from "./tabs/AllergiesTab";
 import FamilyHistoryTab from "./tabs/FamilyHistoryTab";
 import SocialHistoryTab from "./tabs/SocialHistoryTab";
+import GynecologicHistoryTab from "./tabs/GynecologicHistoryTab";
+import ReviewOfSystemsTab from "./tabs/ReviewOfSystemsTab";
 
 function PatientTabs({ patient, tab, setTab, form, setForm }) {
   return (
@@ -17,15 +19,25 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
         onChange={(e, v) => setTab(v)}
         variant="scrollable"
         scrollButtons="auto"
+        TabIndicatorProps={{ style: { backgroundColor: "#5f72be", height: 4, borderRadius: 2 } }}
+        sx={{
+          backgroundColor: "#f4f6fb",
+          borderRadius: 3,
+          mb: 2,
+          minHeight: 56,
+          px: 1,
+        }}
       >
-        <Tab label="Patient Info" />
-        <Tab label="Consultation" />
-        <Tab label="Medical History" />
-        <Tab label="Hospitalization" />
-        <Tab label="Surgery" />
-        <Tab label="Allergies" />
-        <Tab label="Family History" />
-        <Tab label="Social History" />
+        <Tab label="Patient Info" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Consultation" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Medical History" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Hospitalization" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Surgery" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Allergies" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Family History" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Social History" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Gynecologic History" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Review of Systems" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
       </Tabs>
 
       <TabPanel value={tab} index={0}>
@@ -58,6 +70,14 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
 
       <TabPanel value={tab} index={7}>
         <SocialHistoryTab patient={patient} form={form} setForm={setForm} />
+      </TabPanel>
+
+      <TabPanel value={tab} index={8}>
+        <GynecologicHistoryTab patient={patient} form={form} setForm={setForm} />
+      </TabPanel>
+
+      <TabPanel value={tab} index={9}>
+        <ReviewOfSystemsTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
     </Box>
   );

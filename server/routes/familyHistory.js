@@ -30,4 +30,20 @@ router.post("/:patientId", (req, res) => {
   );
 });
 
+router.get("/:patientId", (req, res) => {
+  const { patientId } = req.params;
+  const sql = `
+    SELECT *
+    FROM family_history
+    WHERE patient_id = ?
+  `;
+
+  db.query(sql, [patientId], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
 module.exports = router;

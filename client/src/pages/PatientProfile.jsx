@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -12,16 +12,13 @@ import {
   Button,
   Stack,
 } from "@mui/material";
-import PatientTabs from "../components/PatientTabs";
 import { formatDate, formatDateTime } from "../utils/dateUtils";
 
-function PatientDetails() {
+function PatientProfile() {
   const { id } = useParams();
-
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [tab, setTab] = useState(0);
   const [medicalHistory, setMedicalHistory] = useState([]);
   const [consultation, setConsultation] = useState(null);
   const [allergies, setAllergies] = useState([]);
@@ -43,26 +40,9 @@ function PatientDetails() {
 
   const sectionTitleSx = {
     fontWeight: 700,
-    mb: 2,
+    mb: 1,
     color: "text.primary",
   };
-
-  const [form, setForm] = useState(() => {
-    const patientId = id;
-    const storedForm = window.localStorage.getItem(`patient:${patientId}:form`);
-    if (storedForm) {
-      try {
-        return JSON.parse(storedForm);
-      } catch (err) {
-        console.error("Failed to parse stored form data", err);
-      }
-    }
-    return {
-      chief_complaint: "",
-      hpi: "",
-      notes: "",
-    };
-  });
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -71,11 +51,9 @@ function PatientDetails() {
         setError("");
 
         const res = await fetch(`http://localhost:3000/patients/${id}`);
-
         if (!res.ok) throw new Error("Failed to fetch patient data");
 
-        const data = await res.json();
-        setPatient(data);
+        setPatient(await res.json());
       } catch (err) {
         setError(err.message);
       } finally {
@@ -83,130 +61,29 @@ function PatientDetails() {
       }
     };
 
-    const fetchMedicalHistory = async () => {
+    const fetchResource = async (url, setter) => {
       try {
-        const res = await fetch(`http://localhost:3000/medical-history/${id}`);
+        const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
-          setMedicalHistory(data);
+          setter(data);
         }
       } catch (err) {
-        console.error("Failed to fetch medical history:", err);
-      }
-    };
-
-    const fetchConsultation = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/consultations/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setConsultation(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch consultation:", err);
-      }
-    };
-
-    const fetchAllergies = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/allergies/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setAllergies(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch allergies:", err);
-      }
-    };
-
-    const fetchSurgeries = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/surgeries/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setSurgeries(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch surgeries:", err);
-      }
-    };
-
-    const fetchHospitalizations = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/hospitalizations/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setHospitalizations(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch hospitalizations:", err);
-      }
-    };
-
-    const fetchFamilyHistory = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/family-history/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setFamilyHistory(data || []);
-        }
-      } catch (err) {
-        console.error("Failed to fetch family history:", err);
-      }
-    };
-
-    const fetchSocialHistory = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/social-history/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setSocialHistory(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch social history:", err);
-      }
-    };
-
-    const fetchGynecologicHistory = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/gynecologic-history/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setGynecologicHistory(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch gynecologic history:", err);
-      }
-    };
-
-    const fetchReviewOfSystems = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/review-of-systems/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setReviewOfSystems(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch review of systems:", err);
+        console.error(`Failed to fetch ${url}:`, err);
       }
     };
 
     fetchPatient();
-    fetchMedicalHistory();
-    fetchConsultation();
-    fetchAllergies();
-    fetchSurgeries();
-    fetchHospitalizations();
-    fetchFamilyHistory();
-    fetchSocialHistory();
-    fetchGynecologicHistory();
-    fetchReviewOfSystems();
+    fetchResource(`http://localhost:3000/medical-history/${id}`, setMedicalHistory);
+    fetchResource(`http://localhost:3000/consultations/${id}`, setConsultation);
+    fetchResource(`http://localhost:3000/allergies/${id}`, setAllergies);
+    fetchResource(`http://localhost:3000/surgeries/${id}`, setSurgeries);
+    fetchResource(`http://localhost:3000/hospitalizations/${id}`, setHospitalizations);
+    fetchResource(`http://localhost:3000/family-history/${id}`, setFamilyHistory);
+    fetchResource(`http://localhost:3000/social-history/${id}`, setSocialHistory);
+    fetchResource(`http://localhost:3000/gynecologic-history/${id}`, setGynecologicHistory);
+    fetchResource(`http://localhost:3000/review-of-systems/${id}`, setReviewOfSystems);
   }, [id]);
-
-  useEffect(() => {
-    if (!id) return;
-    window.localStorage.setItem(`patient:${id}:form`, JSON.stringify(form));
-  }, [form, id]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -214,7 +91,6 @@ function PatientDetails() {
 
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", p: 2, pb: 4 }}>
-      {/* Header Section */}
       <Paper sx={{ p: 3, mb: 3, borderRadius: 4, background: "linear-gradient(135deg, #5f72be 0%, #9b23d3 100%)", color: "white", boxShadow: "0 20px 45px rgba(54, 84, 155, 0.18)" }}>
         <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: 2, alignItems: { xs: "flex-start", md: "center" } }}>
           <Box>
@@ -226,19 +102,11 @@ function PatientDetails() {
             </Typography>
           </Box>
           <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => setTab(0)}
-            >
-              Edit Details
+            <Button component={Link} to="/" variant="outlined" sx={{ color: "white", borderColor: "rgba(255,255,255,0.7)" }}>
+              Back to list
             </Button>
-            <Button
-              variant="outlined"
-              sx={{ color: "white", borderColor: "rgba(255,255,255,0.7)" }}
-              onClick={() => window.print()}
-            >
-              Print
+            <Button component={Link} to={`/patients/${id}/forms`} variant="contained" color="secondary">
+              View Forms
             </Button>
           </Stack>
         </Box>
@@ -252,119 +120,84 @@ function PatientDetails() {
           Quick access to important patient details for clinic workflows.
         </Typography>
         <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={sectionCardSx}>
-            <CardContent>
-              <Typography color="textSecondary" gutterBottom>
-                Age
-              </Typography>
-              <Typography variant="h5">{patient.age} years</Typography>
-            </CardContent>
-          </Card>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={sectionCardSx}>
+              <CardContent>
+                <Typography color="textSecondary" gutterBottom>
+                  Age
+                </Typography>
+                <Typography variant="h5">{patient.age} years</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={sectionCardSx}>
+              <CardContent>
+                <Typography color="textSecondary" gutterBottom>
+                  Birth Date
+                </Typography>
+                <Typography variant="h6">
+                  {formatDate(patient.birth_date)}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={sectionCardSx}>
+              <CardContent>
+                <Typography color="textSecondary" gutterBottom>
+                  Contact
+                </Typography>
+                <Typography variant="h6">{patient.contact_num || "N/A"}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={sectionCardSx}>
+              <CardContent>
+                <Typography color="textSecondary" gutterBottom>
+                  Address
+                </Typography>
+                <Typography variant="body2">{patient.address || "N/A"}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={sectionCardSx}>
-            <CardContent>
-              <Typography color="textSecondary" gutterBottom>
-                Birth Date
-              </Typography>
-              <Typography variant="h6">
-                {formatDate(patient.birth_date)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={sectionCardSx}>
-            <CardContent>
-              <Typography color="textSecondary" gutterBottom>
-                Contact
-              </Typography>
-              <Typography variant="h6">{patient.contact_num || "N/A"}</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={sectionCardSx}>
-            <CardContent>
-              <Typography color="textSecondary" gutterBottom>
-                Address
-              </Typography>
-              <Typography variant="body2">{patient.address || "N/A"}</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
       </Paper>
 
-      {/* Comprehensive Medical Summary */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
-        {/* Medical History */}
-        <Grid item xs={12} md={6}>
-         <Card sx={sectionCardSx}>
-  <CardContent>
-    <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
-      Medical History
-    </Typography>
-
-    {medicalHistory?.length > 0 ? (
-      <Box>
-        {medicalHistory.map((item) => (
-          <Box
-            key={item.history_id}
-            sx={{
-              mb: 1.5,
-              p: 1,
-              border: "1px solid #eee",
-              borderRadius: 1,
-              bgcolor: "background.paper",
-            }}
-          >
-            {/* Condition */}
-            <Chip
-              label={item.condition_name}
-              color="primary"
-              size="small"
-              sx={{ mb: item.remarks ? 1 : 0 }}
-            />
-
-            {/* Remarks */}
-            {item.remarks?.trim() ? (
-              <Typography
-                variant="body2"
-                sx={{
-                  mt: 0.5,
-                  color: "text.secondary",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {item.remarks}
-              </Typography>
-            ) : (
-              <Typography
-                variant="body2"
-                sx={{ mt: 0.5, color: "text.disabled", fontStyle: "italic" }}
-              >
-                No remarks
-              </Typography>
-            )}
-          </Box>
-        ))}
-      </Box>
-    ) : (
-      <Typography variant="body2" color="text.secondary">
-        No medical history recorded
-      </Typography>
-    )}
-  </CardContent>
-</Card>
-        </Grid>
-
-        {/* Allergies */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
-              <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
+              <Typography variant="h6" sx={sectionTitleSx}>
+                Medical History
+              </Typography>
+              {medicalHistory.length > 0 ? (
+                <Box>
+                  {medicalHistory.map((item) => (
+                    <Box key={item.history_id} sx={{ mb: 1 }}>
+                      <Chip label={item.condition_name} variant="outlined" color="primary" size="small" />
+                      {item.remarks && (
+                        <Typography variant="body2" sx={{ mt: 0.5, color: "text.secondary" }}>
+                          {item.remarks}
+                        </Typography>
+                      )}
+                    </Box>
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No medical history recorded
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Card sx={sectionCardSx}>
+            <CardContent>
+              <Typography variant="h6" sx={sectionTitleSx}>
                 Allergies
               </Typography>
               {allergies.length > 0 ? (
@@ -389,11 +222,10 @@ function PatientDetails() {
           </Card>
         </Grid>
 
-        {/* Consultations */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
-              <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
+              <Typography variant="h6" sx={sectionTitleSx}>
                 Consultation
               </Typography>
               {consultation ? (
@@ -418,11 +250,10 @@ function PatientDetails() {
           </Card>
         </Grid>
 
-        {/* Surgeries */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
-              <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
+              <Typography variant="h6" sx={sectionTitleSx}>
                 Surgeries
               </Typography>
               {surgeries.length > 0 ? (
@@ -447,11 +278,10 @@ function PatientDetails() {
           </Card>
         </Grid>
 
-        {/* Hospitalizations */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
-              <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
+              <Typography variant="h6" sx={sectionTitleSx}>
                 Hospitalizations
               </Typography>
               {hospitalizations.length > 0 ? (
@@ -476,11 +306,10 @@ function PatientDetails() {
           </Card>
         </Grid>
 
-        {/* Family History */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
-              <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
+              <Typography variant="h6" sx={sectionTitleSx}>
                 Family History
               </Typography>
               {familyHistory.length > 0 ? (
@@ -505,11 +334,10 @@ function PatientDetails() {
           </Card>
         </Grid>
 
-        {/* Social History */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
-              <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
+              <Typography variant="h6" sx={sectionTitleSx}>
                 Social History
               </Typography>
               {socialHistory ? (
@@ -560,11 +388,10 @@ function PatientDetails() {
           </Card>
         </Grid>
 
-        {/* Gynecologic History */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
-              <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
+              <Typography variant="h6" sx={sectionTitleSx}>
                 Gynecologic History
               </Typography>
               {gynecologicHistory ? (
@@ -603,11 +430,10 @@ function PatientDetails() {
           </Card>
         </Grid>
 
-        {/* Review of Systems */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
-              <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
+              <Typography variant="h6" sx={sectionTitleSx}>
                 Review of Systems
               </Typography>
               {reviewOfSystems ? (
@@ -647,22 +473,8 @@ function PatientDetails() {
           </Card>
         </Grid>
       </Grid>
-
-      {/* Tabs Section */}
-      <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 3, backgroundColor: "#fff" }}>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, letterSpacing: "-0.01em" }}>
-          Patient Record Forms
-        </Typography>
-        <PatientTabs
-          patient={patient}
-          tab={tab}
-          setTab={setTab}
-          form={form}
-          setForm={setForm}
-        />
-      </Paper>
     </Box>
   );
 }
 
-export default PatientDetails;
+export default PatientProfile;

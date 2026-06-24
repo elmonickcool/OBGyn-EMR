@@ -2,24 +2,31 @@ import { TextField, Button, Typography } from "@mui/material";
 
 function FamilyHistoryTab({ patient, form, setForm }) {
   const saveFamilyHistory = async () => {
+    if (!form.family_condition?.trim()) {
+      alert("Please enter the family condition");
+      return;
+    }
+
     try {
       const res = await fetch(`http://localhost:3000/family-history/${patient.patient_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           condition_name: form.family_condition,
-          remarks: form.family_remarks,
+          remarks: form.family_remarks || "",
         }),
       });
 
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Failed to save");
+        const data = await res.json();
+        throw new Error(data.error || `Failed to save family history (HTTP ${res.status})`);
       }
 
-      alert("Family history saved!");
+      setForm({ ...form, family_condition: "", family_remarks: "" });
+      alert("Family history saved successfully!");
     } catch (err) {
-      alert(err.message);
+      alert(`Error: ${err.message}`);
+      console.error("Save family history error:", err);
     }
   };
 

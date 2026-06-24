@@ -39,4 +39,27 @@ router.post("/:patientId", (req, res) => {
   );
 });
 
+router.get("/:patientId", (req, res) => {
+  const { patientId } = req.params;
+
+  const sql = `
+    SELECT *
+    FROM consultation
+    WHERE patient_id = ?
+  `;
+
+  db.query(sql, [patientId], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (results.length > 0) {
+      res.json(results[0]);
+    } else {
+      res.json(null);
+    }
+  });
+});
+
 module.exports = router;
