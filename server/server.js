@@ -97,6 +97,12 @@ app.use("/consultations", require("./routes/consultation"));
 /* ================= MEDICAL HISTORY ROUTES ================= */
 app.use("/medical-history", require("./routes/medicalHistory"));
 
+/* ================= HOSPITALIZATION ROUTES ================= */
+app.use("/hospitalizations", require("./routes/hospitalization"));
+
+/* ================= SURGERIES ROUTES ================= */
+app.use("/surgeries", require("./routes/surgeries"));
+
 /* ================= SERVER START ================= */
 const PORT = 3000;
 
