@@ -34,6 +34,10 @@ app.get("/patients", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.send("Medical Records API is running 🚀");
+});
+
 // GET patient by ID
 app.get("/patients/:id", (req, res) => {
   db.query(
@@ -156,6 +160,6 @@ app.use("/review-of-systems", require("./routes/reviewOfSystems"));
 /* ================= SERVER START ================= */
 const PORT = 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });

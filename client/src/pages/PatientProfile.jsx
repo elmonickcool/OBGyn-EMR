@@ -50,7 +50,7 @@ function PatientProfile() {
         setLoading(true);
         setError("");
 
-        const res = await fetch(`http://localhost:3000/patients/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/patients/${id}`);
         if (!res.ok) throw new Error("Failed to fetch patient data");
 
         setPatient(await res.json());
@@ -74,15 +74,15 @@ function PatientProfile() {
     };
 
     fetchPatient();
-    fetchResource(`http://localhost:3000/medical-history/${id}`, setMedicalHistory);
-    fetchResource(`http://localhost:3000/consultations/${id}`, setConsultation);
-    fetchResource(`http://localhost:3000/allergies/${id}`, setAllergies);
-    fetchResource(`http://localhost:3000/surgeries/${id}`, setSurgeries);
-    fetchResource(`http://localhost:3000/hospitalizations/${id}`, setHospitalizations);
-    fetchResource(`http://localhost:3000/family-history/${id}`, setFamilyHistory);
-    fetchResource(`http://localhost:3000/social-history/${id}`, setSocialHistory);
-    fetchResource(`http://localhost:3000/gynecologic-history/${id}`, setGynecologicHistory);
-    fetchResource(`http://localhost:3000/review-of-systems/${id}`, setReviewOfSystems);
+    fetchResource(`http://192.168.0.101:3000/medical-history/${id}`, setMedicalHistory);
+    fetchResource(`http://192.168.0.101:3000/consultations/${id}`, setConsultation);
+    fetchResource(`http://192.168.0.101:3000/allergies/${id}`, setAllergies);
+    fetchResource(`http://192.168.0.101:3000/surgeries/${id}`, setSurgeries);
+    fetchResource(`http://192.168.0.101:3000/hospitalizations/${id}`, setHospitalizations);
+    fetchResource(`http://192.168.0.101:3000/family-history/${id}`, setFamilyHistory);
+    fetchResource(`http://192.168.0.101:3000/social-history/${id}`, setSocialHistory);
+    fetchResource(`http://192.168.0.101:3000/gynecologic-history/${id}`, setGynecologicHistory);
+    fetchResource(`http://192.168.0.101:3000/review-of-systems/${id}`, setReviewOfSystems);
   }, [id]);
 
   if (loading) return <p>Loading...</p>;

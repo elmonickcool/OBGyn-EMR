@@ -70,7 +70,7 @@ function PatientDetails() {
         setLoading(true);
         setError("");
 
-        const res = await fetch(`http://localhost:3000/patients/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/patients/${id}`);
 
         if (!res.ok) throw new Error("Failed to fetch patient data");
 
@@ -85,7 +85,7 @@ function PatientDetails() {
 
     const fetchMedicalHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/medical-history/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/medical-history/${id}`);
         if (res.ok) {
           const data = await res.json();
           setMedicalHistory(data);
@@ -97,7 +97,7 @@ function PatientDetails() {
 
     const fetchConsultation = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/consultations/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/consultations/${id}`);
         if (res.ok) {
           const data = await res.json();
           setConsultation(data);
@@ -109,7 +109,7 @@ function PatientDetails() {
 
     const fetchAllergies = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/allergies/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/allergies/${id}`);
         if (res.ok) {
           const data = await res.json();
           setAllergies(data);
@@ -121,7 +121,7 @@ function PatientDetails() {
 
     const fetchSurgeries = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/surgeries/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/surgeries/${id}`);
         if (res.ok) {
           const data = await res.json();
           setSurgeries(data);
@@ -133,7 +133,7 @@ function PatientDetails() {
 
     const fetchHospitalizations = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/hospitalizations/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/hospitalizations/${id}`);
         if (res.ok) {
           const data = await res.json();
           setHospitalizations(data);
@@ -145,7 +145,7 @@ function PatientDetails() {
 
     const fetchFamilyHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/family-history/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/family-history/${id}`);
         if (res.ok) {
           const data = await res.json();
           setFamilyHistory(data || []);
@@ -157,7 +157,7 @@ function PatientDetails() {
 
     const fetchSocialHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/social-history/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/social-history/${id}`);
         if (res.ok) {
           const data = await res.json();
           setSocialHistory(data);
@@ -169,7 +169,7 @@ function PatientDetails() {
 
     const fetchGynecologicHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/gynecologic-history/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/gynecologic-history/${id}`);
         if (res.ok) {
           const data = await res.json();
           setGynecologicHistory(data);
@@ -181,7 +181,7 @@ function PatientDetails() {
 
     const fetchReviewOfSystems = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/review-of-systems/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/review-of-systems/${id}`);
         if (res.ok) {
           const data = await res.json();
           setReviewOfSystems(data);
@@ -300,65 +300,29 @@ function PatientDetails() {
       {/* Comprehensive Medical Summary */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         {/* Medical History */}
+      <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-         <Card sx={sectionCardSx}>
-  <CardContent>
-    <Typography variant="h6" sx={{ ...sectionTitleSx, mb: 1 }}>
-      Medical History
-    </Typography>
+          <Card sx={sectionCardSx}>
+            <CardContent>
+              <Typography variant="h6">Medical History</Typography>
 
-    {medicalHistory?.length > 0 ? (
-      <Box>
-        {medicalHistory.map((item) => (
-          <Box
-            key={item.history_id}
-            sx={{
-              mb: 1.5,
-              p: 1,
-              border: "1px solid #eee",
-              borderRadius: 1,
-              bgcolor: "background.paper",
-            }}
-          >
-            {/* Condition */}
-            <Chip
-              label={item.condition_name}
-              color="primary"
-              size="small"
-              sx={{ mb: item.remarks ? 1 : 0 }}
-            />
-
-            {/* Remarks */}
-            {item.remarks?.trim() ? (
-              <Typography
-                variant="body2"
-                sx={{
-                  mt: 0.5,
-                  color: "text.secondary",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {item.remarks}
-              </Typography>
-            ) : (
-              <Typography
-                variant="body2"
-                sx={{ mt: 0.5, color: "text.disabled", fontStyle: "italic" }}
-              >
-                No remarks
-              </Typography>
-            )}
-          </Box>
-        ))}
-      </Box>
-    ) : (
-      <Typography variant="body2" color="text.secondary">
-        No medical history recorded
-      </Typography>
-    )}
-  </CardContent>
-</Card>
+              {medicalHistory.length > 0 ? (
+                medicalHistory.map((item) => (
+                  <Box key={item.history_id} sx={{ mt: 1 }}>
+                    <Chip label={item.condition_name} />
+                    <Typography variant="body2">
+                      {item.remarks || "No remarks"}
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography>No medical history</Typography>
+              )}
+            </CardContent>
+          </Card>
         </Grid>
+      </Grid>
+
 
         {/* Allergies */}
         <Grid item xs={12} md={6}>
@@ -649,10 +613,9 @@ function PatientDetails() {
       </Grid>
 
       {/* Tabs Section */}
-      <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 3, backgroundColor: "#fff" }}>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, letterSpacing: "-0.01em" }}>
-          Patient Record Forms
-        </Typography>
+       <Paper sx={{ p: 3, mt: 3 }}>
+        <Typography variant="h6">Patient Record Forms</Typography>
+
         <PatientTabs
           patient={patient}
           tab={tab}

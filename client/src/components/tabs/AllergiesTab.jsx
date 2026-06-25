@@ -8,7 +8,7 @@ function AllergiesTab({ patient, form, setForm }) {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/allergies/${patient.patient_id}`, {
+      const res = await fetch(`http://0.0.0.0:3000/allergies/${patient.patient_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

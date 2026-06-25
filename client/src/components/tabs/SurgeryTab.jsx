@@ -4,35 +4,48 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 function SurgeryTab({ patient, form, setForm }) {
   const saveSurgery = async () => {
-    if (!form.surgery_name?.trim() || !form.surgery_date) {
-      alert("Please enter surgery name and date");
-      return;
-    }
+  if (!form.surgery_name?.trim() || !form.surgery_date) {
+    alert("Please enter surgery name and date");
+    return;
+  }
 
-    try {
-      const res = await fetch(`http://localhost:3000/surgeries/${patient.patient_id}`, {
+  try {
+    const res = await fetch(
+      `http://localhost:3000/surgeries/${patient.patient_id}`,
+      {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           surgery_name: form.surgery_name,
           surgery_date: form.surgery_date,
           details: form.surgery_details,
         }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || `Failed to save surgery (HTTP ${res.status})`);
       }
+    );
 
-      const data = await res.json();
-      setForm({ surgery_name: "", surgery_date: "", surgery_details: "" });
-      alert("Surgery record saved successfully!");
-    } catch (err) {
-      alert(`Error: ${err.message}`);
-      console.error("Save surgery error:", err);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        data.error || `Failed to save surgery (HTTP ${res.status})`
+      );
     }
-  };
+
+    setForm({
+      ...form,
+      surgery_name: "",
+      surgery_date: "",
+      surgery_details: "",
+    });
+
+    alert("Surgery record saved successfully!");
+  } catch (err) {
+    console.error(err);
+    alert(`Error: ${err.message}`);
+  }
+};
 
   return (
     <>

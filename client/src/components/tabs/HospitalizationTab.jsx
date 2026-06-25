@@ -10,7 +10,7 @@ function HospitalizationTab({ patient, form, setForm }) {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/hospitalizations/${patient.patient_id}`, {
+      const res = await fetch(`http://192.168.0.101:3000/hospitalizations/${patient.patient_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

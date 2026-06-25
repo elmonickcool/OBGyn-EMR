@@ -15,7 +15,7 @@ function MedicalHistoryTab({ patient, form, setForm }) {
   useEffect(() => {
     const fetchConditions = async () => {
       try {
-        const res = await fetch("http://localhost:3000/conditions");
+        const res = await fetch("http://192.168.0.101:3000/conditions");
         const data = await res.json();
         setConditions(data);
       } catch (err) {
@@ -41,7 +41,7 @@ function MedicalHistoryTab({ patient, form, setForm }) {
     try {
       const results = await Promise.all(
         selectedConditions.map(async (condition_id) => {
-          const res = await fetch(`http://localhost:3000/medical-history/${patient.patient_id}`, {
+          const res = await fetch(`http://192.168.0.101:3000/medical-history/${patient.patient_id}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -87,14 +87,19 @@ function MedicalHistoryTab({ patient, form, setForm }) {
       </FormGroup>
 
       <TextField
-        label="Remarks"
-        fullWidth
-        multiline
-        rows={3}
-        sx={{ mt: 2 }}
-        value={form.remarks || ""}
-        onChange={(e) => setForm({ ...form, remarks: e.target.value })}
-      />
+  label="Remarks"
+  fullWidth
+  multiline
+  rows={3}
+  sx={{ mt: 2 }}
+  value={form.remarks || ""}
+  onChange={(e) =>
+    setForm((prev) => ({
+      ...prev,
+      remarks: e.target.value,
+    }))
+  }
+/>
 
       <Button sx={{ mt: 2 }} variant="contained" onClick={saveMedicalHistory}>
         Save Medical History

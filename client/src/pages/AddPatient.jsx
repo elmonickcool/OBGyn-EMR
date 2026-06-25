@@ -1,5 +1,18 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  Container,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Stack,
+  Alert,
+  Box,
+} from "@mui/material";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 function AddPatient() {
   const [form, setForm] = useState({
@@ -21,9 +34,15 @@ function AddPatient() {
     const birth = new Date(birthDate);
 
     let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
 
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    const monthDiff =
+      today.getMonth() - birth.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 &&
+        today.getDate() < birth.getDate())
+    ) {
       age--;
     }
 
@@ -40,23 +59,34 @@ function AddPatient() {
         age: calculateAge(value),
       });
     } else {
-      setForm({ ...form, [name]: value });
+      setForm({
+        ...form,
+        [name]: value,
+      });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch("http://localhost:3000/patients", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        "http://192.168.0.101:3000/patients",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
 
-      if (!response.ok) throw new Error("Failed to add patient");
+      if (!response.ok) {
+        throw new Error("Failed to add patient");
+      }
 
       navigate("/");
     } catch (err) {
@@ -67,119 +97,199 @@ function AddPatient() {
   };
 
   return (
-    <div className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* HEADER */}
+      <Paper
+        sx={{
+          p: 3,
+          mb: 3,
+          borderRadius: 4,
+          background:
+            "linear-gradient(135deg, #4f46e5, #7c3aed)",
+          color: "white",
+        }}
+      >
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          spacing={2}
+        >
+          <Box>
+            <Typography variant="h4" fontWeight="700">
+              Patient Registration
+            </Typography>
 
-          {/* Card */}
-          <div className="card shadow-lg border-0 rounded-4">
-            <div className="card-body p-4">
+            <Typography sx={{ opacity: 0.85 }}>
+              Register a new patient into the
+              Electronic Medical Records System
+            </Typography>
+          </Box>
 
-              {/* Header */}
-              <div className="text-center mb-4">
-                <h3 className="fw-bold">Add New Patient</h3>
-                <p className="text-muted mb-0">
-                  Fill in the patient information below
-                </p>
-              </div>
+          <Button
+            component={Link}
+            to="/"
+            variant="contained"
+            sx={{
+              bgcolor: "white",
+              color: "#4f46e5",
+              fontWeight: 700,
+              "&:hover": {
+                bgcolor: "#f1f5f9",
+              },
+            }}
+          >
+            Back to Patients
+          </Button>
+        </Stack>
+      </Paper>
 
-              {error && (
-                <div className="alert alert-danger py-2">{error}</div>
-              )}
+      {/* FORM */}
+      <Paper
+        sx={{
+          p: 4,
+          borderRadius: 4,
+        }}
+      >
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
 
-              <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          <Typography
+            variant="h6"
+            fontWeight={600}
+            gutterBottom
+          >
+            Personal Information
+          </Typography>
 
-                <div className="row">
-                  <div className="col-md-6 mb-3">
-                    <label className="form-label">First Name</label>
-                    <input
-                      type="text"
-                      name="first_name"
-                      className="form-control"
-                      value={form.first_name}
-                      onChange={handleChange}
-                      placeholder="John"
-                      required
-                    />
-                  </div>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="First Name"
+                name="first_name"
+                value={form.first_name}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
 
-                  <div className="col-md-6 mb-3">
-                    <label className="form-label">Last Name</label>
-                    <input
-                      type="text"
-                      name="last_name"
-                      className="form-control"
-                      value={form.last_name}
-                      onChange={handleChange}
-                      placeholder="Doe"
-                      required
-                    />
-                  </div>
-                </div>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Last Name"
+                name="last_name"
+                value={form.last_name}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
 
-                <div className="mb-3">
-                  <label className="form-label">Birth Date</label>
-                  <input
-                    type="date"
-                    name="birth_date"
-                    className="form-control"
-                    value={form.birth_date}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+            <Grid item xs={12} md={6}>
+              <DatePicker
+  label="Birth Date"
+  value={
+    form.birth_date
+      ? dayjs(form.birth_date)
+      : null
+  }
+  onChange={(newValue) => {
+    const birthDate = newValue
+      ? newValue.format("YYYY-MM-DD")
+      : "";
 
-                <div className="mb-3">
-                  <label className="form-label">Age (auto-calculated)</label>
-                  <input
-                    type="number"
-                    name="age"
-                    className="form-control bg-light"
-                    value={form.age}
-                    readOnly
-                  />
-                </div>
+    setForm({
+      ...form,
+      birth_date: birthDate,
+      age: birthDate
+        ? calculateAge(birthDate)
+        : "",
+    });
+  }}
+  slotProps={{
+    textField: {
+      fullWidth: true,
+      required: true,
+    },
+  }}
+/>
+            </Grid>
 
-                <div className="mb-3">
-                  <label className="form-label">Address</label>
-                  <textarea
-                    name="address"
-                    className="form-control"
-                    value={form.address}
-                    onChange={handleChange}
-                    placeholder="Enter full address"
-                    rows="2"
-                  />
-                </div>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Age"
+                value={form.age}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+          </Grid>
 
-                <div className="mb-4">
-                  <label className="form-label">Contact Number</label>
-                  <input
-                    type="text"
-                    name="contact_num"
-                    className="form-control"
-                    value={form.contact_num}
-                    onChange={handleChange}
-                    placeholder="09XXXXXXXXX"
-                  />
-                </div>
+          <Typography
+            variant="h6"
+            fontWeight={600}
+            sx={{ mt: 4 }}
+            gutterBottom
+          >
+            Contact Information
+          </Typography>
 
-                <button
-                  type="submit"
-                  className="btn btn-success w-100 py-2 fw-semibold"
-                  disabled={loading}
-                >
-                  {loading ? "Saving Patient..." : "Save Patient"}
-                </button>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                multiline
+                rows={3}
+                label="Address"
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+              />
+            </Grid>
 
-              </form>
-            </div>
-          </div>
-          {/* End Card */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Contact Number"
+                name="contact_num"
+                value={form.contact_num}
+                onChange={handleChange}
+              />
+            </Grid>
+          </Grid>
 
-        </div>
-      </div>
-    </div>
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="flex-end"
+            sx={{ mt: 4 }}
+          >
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/")}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
+            >
+              {loading
+                ? "Saving Patient..."
+                : "Save Patient"}
+            </Button>
+          </Stack>
+        </form>
+      </Paper>
+    </Container>
   );
 }
 

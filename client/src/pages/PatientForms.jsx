@@ -31,7 +31,7 @@ function PatientForms() {
         setLoading(true);
         setError("");
 
-        const res = await fetch(`http://localhost:3000/patients/${id}`);
+        const res = await fetch(`http://192.168.0.101:3000/patients/${id}`);
         if (!res.ok) throw new Error("Failed to fetch patient data");
 
         setPatient(await res.json());

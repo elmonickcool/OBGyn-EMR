@@ -3,7 +3,7 @@ import { Box, Typography, TextField, Button, Checkbox, FormGroup, FormControlLab
 function SocialHistoryTab({ patient, form, setForm }) {
   const saveSocialHistory = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/social-history/${patient.patient_id}`, {
+      const res = await fetch(`http://192.168.0.101:3000/social-history/${patient.patient_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
