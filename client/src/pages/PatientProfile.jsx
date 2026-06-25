@@ -164,35 +164,43 @@ function PatientProfile() {
           </Grid>
         </Grid>
       </Paper>
+<Grid container spacing={2}>
+     <Grid item xs={12} md={6}>
+  <Card sx={sectionCardSx}>
+    <CardContent>
+      <Typography variant="h6" sx={sectionTitleSx}>
+  Medical History
+</Typography>
 
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} md={6}>
-          <Card sx={sectionCardSx}>
-            <CardContent>
-              <Typography variant="h6" sx={sectionTitleSx}>
-                Medical History
-              </Typography>
-              {medicalHistory.length > 0 ? (
-                <Box>
-                  {medicalHistory.map((item) => (
-                    <Box key={item.history_id} sx={{ mb: 1 }}>
-                      <Chip label={item.condition_name} variant="outlined" color="primary" size="small" />
-                      {item.remarks && (
-                        <Typography variant="body2" sx={{ mt: 0.5, color: "text.secondary" }}>
-                          {item.remarks}
-                        </Typography>
-                      )}
-                    </Box>
-                  ))}
-                </Box>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  No medical history recorded
-                </Typography>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
+{medicalHistory.length > 0 ? (
+  <>
+    <Box sx={{ mb: 2 }}>
+      {medicalHistory.map((item) => (
+        <Chip
+          key={item.history_id}
+          label={item.condition_name}
+          color="primary"
+          size="small"
+          sx={{ mr: 1, mb: 1 }}
+        />
+      ))}
+    </Box>
+
+    <Typography variant="subtitle2">
+      <b>Remarks:</b>
+    </Typography>
+    <Typography variant="body2" color="text.secondary">
+      {medicalHistory[0]?.remarks || "No remarks"}
+    </Typography>
+  </>
+) : (
+  <Typography variant="body2" color="text.secondary">
+    No medical history recorded
+  </Typography>
+)}
+    </CardContent>
+  </Card>
+</Grid>
 
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
