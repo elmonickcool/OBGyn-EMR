@@ -8,7 +8,7 @@ function AllergiesTab({ patient, form, setForm }) {
     }
 
     try {
-      const res = await fetch(`http://0.0.0.0:3000/allergies/${patient.patient_id}`, {
+      const res = await fetch(`http://localhost:3000/allergies/${patient.patient_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -22,7 +22,7 @@ function AllergiesTab({ patient, form, setForm }) {
         throw new Error(data.error || `Failed to save allergy (HTTP ${res.status})`);
       }
 
-      const data = await res.json();
+      
       setForm({ allergy_type: "", allergy_name: "" });
       alert("Allergy saved successfully!");
     } catch (err) {
@@ -41,7 +41,6 @@ function AllergiesTab({ patient, form, setForm }) {
         select
         fullWidth
         label="Allergy Type"
-        SelectProps={{ native: true }}
         value={form.allergy_type || ""}
         onChange={(e) => setForm({ ...form, allergy_type: e.target.value })}
       >
