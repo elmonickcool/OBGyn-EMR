@@ -1,0 +1,108 @@
+.dashboardHeader {
+  position: relative;
+  overflow: hidden;
+  padding: 32px;
+  border-radius: 24px;
+  color: white;
+
+  background: linear-gradient(135deg, #C2185B, #7B1FA2, #4A148C);
+  background-size: 300% 300%;
+  animation: gradientMove 10s ease infinite;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+/* Animated gradient */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glass overlay */
+.glassOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  z-index: 1;
+}
+
+/* Floating icon badge */
+.iconBadge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 3;
+}
+
+/* Text styles */
+.titleText {
+  color: #fff !important;
+  letter-spacing: -0.02em;
+}
+
+.subtitleText {
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+/* Stat cards */
+.statCard {
+  padding: 12px 16px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.statValue {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.statLabel {
+  font-size: 10px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Button */
+.newPatientBtn {
+  position: absolute !important;
+  right: 24px;
+  top: 24px;
+
+  background: white !important;
+  color: #C2185B !important;
+
+  font-weight: 800 !important;
+  border-radius: 14px !important;
+  padding: 10px 18px !important;
+
+  z-index: 3;
+}
+
+.newPatientBtn:hover {
+  background: #F8BBD9 !important;
+}
