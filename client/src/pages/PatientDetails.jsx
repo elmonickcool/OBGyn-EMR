@@ -24,6 +24,7 @@ function PatientDetails() {
   const [tab, setTab] = useState(0);
   const [medicalHistory, setMedicalHistory] = useState([]);
   const [consultation, setConsultation] = useState(null);
+  const [vitalSigns, setVitalSigns] = useState(null);
   const [allergies, setAllergies] = useState([]);
   const [surgeries, setSurgeries] = useState([]);
   const [hospitalizations, setHospitalizations] = useState([]);
@@ -104,6 +105,17 @@ function PatientDetails() {
         }
       } catch (err) {
         console.error("Failed to fetch consultation:", err);
+      }
+    };
+    const fetchVitalSigns = async () => {
+      try {
+        const res = await fetch(`http://192.168.0.101:3000/vital-signs/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setVitalSigns(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch vital signs:", err);
       }
     };
 
@@ -194,6 +206,7 @@ function PatientDetails() {
     fetchPatient();
     fetchMedicalHistory();
     fetchConsultation();
+    fetchVitalSigns();
     fetchAllergies();
     fetchSurgeries();
     fetchHospitalizations();
@@ -219,7 +232,7 @@ function PatientDetails() {
         <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: 2, alignItems: { xs: "flex-start", md: "center" } }}>
           <Box>
             <Typography variant="h4" sx={{ fontWeight: "bold", letterSpacing: "-0.03em" }}>
-              {patient.first_name} {patient.last_name}
+              {patient.first_name}  {patient.last_name}
             </Typography>
             <Typography variant="body1" sx={{ mt: 1, opacity: 0.9 }}>
               Patient ID: {patient.patient_id}
@@ -251,7 +264,7 @@ function PatientDetails() {
         <Typography variant="body2" sx={{ mb: 3, color: "text.secondary" }}>
           Quick access to important patient details for clinic workflows.
         </Typography>
-        <Grid container spacing={2}>
+        <Grid  spacing={2}>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={sectionCardSx}>
             <CardContent>
@@ -300,7 +313,7 @@ function PatientDetails() {
       {/* Comprehensive Medical Summary */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         {/* Medical History */}
-      <Grid container spacing={2}>
+      
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>
             <CardContent>
@@ -320,7 +333,7 @@ function PatientDetails() {
               )}
             </CardContent>
           </Card>
-        </Grid>
+        
       </Grid>
 
 
@@ -382,6 +395,89 @@ function PatientDetails() {
           </Card>
         </Grid>
 
+        {/* Vital Signs */}
+        <Grid item xs={12} md={6}>
+  <Card sx={sectionCardSx}>
+    <CardContent>
+      <Typography variant="h6" sx={sectionTitleSx}>
+        Vital Signs
+      </Typography>
+
+      {vitalSigns ? (
+        <Grid container spacing={1}>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>Weight:</strong>{" "}
+              {vitalSigns.weight ?? "N/A"} kg
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>Height:</strong>{" "}
+              {vitalSigns.height ?? "N/A"} cm
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>BMI:</strong>{" "}
+              {vitalSigns.bmi ?? "N/A"}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>Blood Pressure:</strong>{" "}
+              {vitalSigns.blood_pressure || "N/A"}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>Pulse Rate:</strong>{" "}
+              {vitalSigns.pulse_rate ?? "N/A"} bpm
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>Respiratory Rate:</strong>{" "}
+              {vitalSigns.respiratory_rate ?? "N/A"}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>Temperature:</strong>{" "}
+              {vitalSigns.temperature ?? "N/A"} °C
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>O₂ Saturation:</strong>{" "}
+              {vitalSigns.oxygen_saturation ?? "N/A"}%
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography>
+              <strong>Pain Scale:</strong>{" "}
+              {vitalSigns.pain_scale ?? "N/A"} /10
+            </Typography>
+          </Grid>
+
+        </Grid>
+      ) : (
+        <Typography color="text.secondary">
+          No vital signs recorded.
+        </Typography>
+      )}
+    </CardContent>
+  </Card>
+</Grid>
         {/* Surgeries */}
         <Grid item xs={12} md={6}>
           <Card sx={sectionCardSx}>

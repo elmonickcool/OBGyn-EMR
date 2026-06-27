@@ -2,6 +2,7 @@ import { Box, Tabs, Tab } from "@mui/material";
 import TabPanel from "./TabPanel";
 import PatientInfoTab from "./tabs/PatientInfoTab";
 import ConsultationTab from "./tabs/ConsultationTab";
+import VitalSignsTab from "./tabs/VitalSignTab";
 import MedicalHistoryTab from "./tabs/MedicalHistoryTab";
 import HospitalizationTab from "./tabs/HospitalizationTab";
 import SurgeryTab from "./tabs/SurgeryTab";
@@ -30,6 +31,7 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
       >
         <Tab label="Patient Info" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
         <Tab label="Consultation" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
+        <Tab label="Vital Signs" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
         <Tab label="Medical History" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
         <Tab label="Hospitalization" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
         <Tab label="Surgery" sx={{ textTransform: "none", minWidth: 120, fontWeight: 600 }} />
@@ -49,34 +51,39 @@ function PatientTabs({ patient, tab, setTab, form, setForm }) {
       </TabPanel>
 
       <TabPanel value={tab} index={2}>
+        <VitalSignsTab patient={patient} form={form} setForm={setForm} />
+      </TabPanel>
+
+
+      <TabPanel value={tab} index={3}>
         <MedicalHistoryTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
 
-      <TabPanel value={tab} index={3}>
+      <TabPanel value={tab} index={4}>
         <HospitalizationTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
 
-      <TabPanel value={tab} index={4}>
+      <TabPanel value={tab} index={5}>
         <SurgeryTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
 
-      <TabPanel value={tab} index={5}>
+      <TabPanel value={tab} index={6}>
         <AllergiesTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
 
-      <TabPanel value={tab} index={6}>
+      <TabPanel value={tab} index={7}>
         <FamilyHistoryTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
 
-      <TabPanel value={tab} index={7}>
+      <TabPanel value={tab} index={8}>
         <SocialHistoryTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
 
-      <TabPanel value={tab} index={8}>
+      <TabPanel value={tab} index={9}>
         <GynecologicHistoryTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
 
-      <TabPanel value={tab} index={9}>
+      <TabPanel value={tab} index={10}>
         <ReviewOfSystemsTab patient={patient} form={form} setForm={setForm} />
       </TabPanel>
     </Box>
