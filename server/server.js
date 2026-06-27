@@ -157,6 +157,10 @@ app.use("/gynecologic-history", require("./routes/gynecologicHistory"));
 /* ================= REVIEW OF SYSTEMS ROUTES ================= */
 app.use("/review-of-systems", require("./routes/reviewOfSystems"));
 
+/* ================= VITAL SIGNS ROUTES ================= */
+app.use("/vital-signs", require("./routes/vitalSign"));
+
+
 /* ================= SERVER START ================= */
 const PORT = 3000;
 
