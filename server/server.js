@@ -56,6 +56,64 @@ app.get("/patients/:id", (req, res) => {
     }
   );
 });
+/* ================= DASHBOARD ================= */
+
+app.get("/dashboard", (req, res) => {
+  const dashboard = {};
+
+  db.query(
+    "SELECT COUNT(*) AS totalPatients FROM patients",
+    (err, patients) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      dashboard.totalPatients = patients[0].totalPatients;
+
+      db.query(
+        `
+        SELECT COUNT(*) AS todayConsultations
+        FROM consultations
+        WHERE DATE(created_at) = CURDATE()
+        `,
+        (err, consultations) => {
+          if (err) return res.status(500).json({ error: err.message });
+
+          dashboard.todayConsultations =
+            consultations[0].todayConsultations;
+
+          db.query(
+            `
+            SELECT COUNT(*) AS totalAllergies
+            FROM allergies
+            `,
+            (err, allergies) => {
+              if (err)
+                return res.status(500).json({ error: err.message });
+
+              dashboard.totalAllergies =
+                allergies[0].totalAllergies;
+
+              db.query(
+                `
+                SELECT COUNT(*) AS totalSurgeries
+                FROM surgeries
+                `,
+                (err, surgeries) => {
+                  if (err)
+                    return res.status(500).json({ error: err.message });
+
+                  dashboard.totalSurgeries =
+                    surgeries[0].totalSurgeries;
+
+                  res.json(dashboard);
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
+});
 
 // UPDATE patient
 app.put("/patients/:id", (req, res) => {
