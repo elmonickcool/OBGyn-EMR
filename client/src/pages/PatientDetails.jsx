@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import PatientTabs from "../components/PatientTabs";
 import { formatDate, formatDateTime } from "../utils/dateUtils";
+import { API_URL } from "../config";
 
 function PatientDetails() {
   const { id } = useParams();
@@ -71,7 +72,7 @@ function PatientDetails() {
         setLoading(true);
         setError("");
 
-        const res = await fetch(`http://192.168.0.101:3000/patients/${id}`);
+        const res = await fetch(`${API_URL}/patients/${id}`);
 
         if (!res.ok) throw new Error("Failed to fetch patient data");
 
@@ -86,7 +87,7 @@ function PatientDetails() {
 
     const fetchMedicalHistory = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/medical-history/${id}`);
+        const res = await fetch(`${API_URL}/medical-history/${id}`);
         if (res.ok) {
           const data = await res.json();
           setMedicalHistory(data);
@@ -98,7 +99,7 @@ function PatientDetails() {
 
     const fetchConsultation = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/consultations/${id}`);
+        const res = await fetch(`${API_URL}/consultations/${id}`);
         if (res.ok) {
           const data = await res.json();
           setConsultation(data);
@@ -109,7 +110,7 @@ function PatientDetails() {
     };
     const fetchVitalSigns = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/vital-signs/${id}`);
+        const res = await fetch(`${API_URL}/vital-signs/${id}`);
         if (res.ok) {
           const data = await res.json();
           setVitalSigns(data);
@@ -121,7 +122,7 @@ function PatientDetails() {
 
     const fetchAllergies = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/allergies/${id}`);
+        const res = await fetch(`${API_URL}/allergies/${id}`);
         if (res.ok) {
           const data = await res.json();
           setAllergies(data);
@@ -133,7 +134,7 @@ function PatientDetails() {
 
     const fetchSurgeries = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/surgeries/${id}`);
+        const res = await fetch(`${API_URL}/surgeries/${id}`);
         if (res.ok) {
           const data = await res.json();
           setSurgeries(data);
@@ -145,7 +146,7 @@ function PatientDetails() {
 
     const fetchHospitalizations = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/hospitalizations/${id}`);
+        const res = await fetch(`${API_URL}/hospitalizations/${id}`);
         if (res.ok) {
           const data = await res.json();
           setHospitalizations(data);
@@ -157,7 +158,7 @@ function PatientDetails() {
 
     const fetchFamilyHistory = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/family-history/${id}`);
+        const res = await fetch(`${API_URL}/family-history/${id}`);
         if (res.ok) {
           const data = await res.json();
           setFamilyHistory(data || []);
@@ -169,7 +170,7 @@ function PatientDetails() {
 
     const fetchSocialHistory = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/social-history/${id}`);
+        const res = await fetch(`${API_URL}/social-history/${id}`);
         if (res.ok) {
           const data = await res.json();
           setSocialHistory(data);
@@ -181,7 +182,7 @@ function PatientDetails() {
 
     const fetchGynecologicHistory = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/gynecologic-history/${id}`);
+        const res = await fetch(`${API_URL}/gynecologic-history/${id}`);
         if (res.ok) {
           const data = await res.json();
           setGynecologicHistory(data);
@@ -193,7 +194,7 @@ function PatientDetails() {
 
     const fetchReviewOfSystems = async () => {
       try {
-        const res = await fetch(`http://192.168.0.101:3000/review-of-systems/${id}`);
+        const res = await fetch(`${API_URL}/review-of-systems/${id}`);
         if (res.ok) {
           const data = await res.json();
           setReviewOfSystems(data);

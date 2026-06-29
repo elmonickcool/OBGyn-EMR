@@ -14,6 +14,7 @@ import {
   Avatar,
 } from "@mui/material";
 import { formatDate, formatDateTime } from "../utils/dateUtils";
+import { API_URL } from "../config";
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const tokens = {
@@ -150,7 +151,7 @@ function PatientProfile() {
       try {
         setLoading(true);
         setError("");
-        const res = await fetch(`http://192.168.0.101:3000/patients/${id}`);
+        const res = await fetch(`${API_URL}/patients/${id}`);
         if (!res.ok) throw new Error("Failed to fetch patient data");
         setPatient(await res.json());
       } catch (err) {

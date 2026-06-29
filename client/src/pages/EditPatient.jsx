@@ -11,6 +11,7 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
+import { API_URL } from "../config";
 
 function EditPatient() {
   const { id } = useParams();
@@ -32,7 +33,7 @@ function EditPatient() {
     const loadPatient = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://192.168.0.101:3000/patients/${id}`);
+        const response = await fetch(`${API_URL}/patients/${id}`);
         if (!response.ok) throw new Error("Failed to fetch patient");
         const data = await response.json();
         setForm({
@@ -88,7 +89,7 @@ function EditPatient() {
     setError("");
 
     try {
-      const response = await fetch(`http://192.168.0.101:3000/patients/${id}`, {
+      const response = await fetch(`${API_URL}/patients/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

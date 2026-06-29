@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { API_URL } from "../config";
 
 // ─── Shared Vibrant Tokens ─────────────────────────────────────────────────
 const t = {
@@ -84,13 +85,188 @@ function calculateAge(birthDate) {
   return age;
 }
 
+const EMPTY_FORM = {
+  first_name: "", last_name: "", age: "",
+  birth_date: "", address: "", contact_num: "",
+};
+
+// ─── Plasma Success Screen ─────────────────────────────────────────────────
+function PlasmaSuccess({ patient, onRegisterAnother, onGoHome, sessionCount }) {
+  return (
+    <Box sx={{
+      minHeight: "100vh",
+      background: `linear-gradient(160deg, #FDF0F8 0%, #F3EEFF 50%, #E8F8FF 100%)`,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      pb: 6, pt: 4,
+    }}>
+      <Container maxWidth="sm">
+
+        {/* Plasma Burst Card */}
+        <Paper elevation={0} sx={{
+          borderRadius: 5,
+          overflow: "hidden",
+          position: "relative",
+          boxShadow: `0 24px 60px ${t.fuchsia}30, 0 8px 24px ${t.violet}20`,
+          animation: "plasma-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both",
+          "@keyframes plasma-in": {
+            from: { opacity: 0, transform: "scale(0.85) translateY(20px)" },
+            to:   { opacity: 1, transform: "scale(1) translateY(0)" },
+          },
+        }}>
+
+          {/* Gradient header */}
+          <Box sx={{
+            background: `linear-gradient(135deg, ${t.fuchsia} 0%, ${t.violet} 60%, #4A148C 100%)`,
+            px: 4, pt: 5, pb: 4,
+            position: "relative",
+            overflow: "hidden",
+            textAlign: "center",
+          }}>
+            {/* Decorative blobs */}
+            {[
+              { top: -30, right: -30, size: 120, op: 0.12 },
+              { bottom: -20, left: -20, size: 90, op: 0.08 },
+              { top: "30%", left: "20%", size: 60, op: 0.06 },
+            ].map((blob, i) => (
+              <Box key={i} sx={{
+                position: "absolute",
+                top: blob.top, right: blob.right,
+                bottom: blob.bottom, left: blob.left,
+                width: blob.size, height: blob.size,
+                borderRadius: "50%",
+                background: `rgba(255,255,255,${blob.op})`,
+                pointerEvents: "none",
+              }} />
+            ))}
+
+            {/* Checkmark burst */}
+            <Box sx={{
+              width: 72, height: 72, borderRadius: "50%",
+              background: "rgba(255,255,255,0.18)",
+              border: "2.5px solid rgba(255,255,255,0.45)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 34, mx: "auto", mb: 2,
+              animation: "pop 0.4s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both",
+              "@keyframes pop": {
+                from: { opacity: 0, transform: "scale(0.4)" },
+                to:   { opacity: 1, transform: "scale(1)" },
+              },
+            }}>
+              ✓
+            </Box>
+
+            <Typography sx={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: "0.12em", textTransform: "uppercase", mb: 0.5 }}>
+              Patient Registered Successfully
+            </Typography>
+            <Typography variant="h5" sx={{ fontWeight: 900, color: "#fff", letterSpacing: "-0.02em" }}>
+              {patient.first_name} {patient.last_name}
+            </Typography>
+            {patient.age && (
+              <Chip
+                label={`${patient.age} years old`}
+                size="small"
+                sx={{ mt: 1, background: "rgba(255,255,255,0.2)", color: "#fff", fontWeight: 700, fontSize: 12, height: 24, borderRadius: 2, border: "1px solid rgba(255,255,255,0.3)" }}
+              />
+            )}
+
+            {/* Session badge */}
+            {sessionCount > 1 && (
+              <Chip
+                label={`${sessionCount} patients registered this session`}
+                size="small"
+                sx={{ mt: 1, ml: 0.5, background: "rgba(255,255,255,0.14)", color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 11, height: 22, borderRadius: 2 }}
+              />
+            )}
+          </Box>
+
+          {/* Patient summary */}
+          <Box sx={{ background: t.white, px: 4, py: 3 }}>
+            {[
+              { label: "Date of Birth", value: patient.birth_date ? dayjs(patient.birth_date).format("MMMM D, YYYY") : "—", color: t.violet },
+              { label: "Contact Number", value: patient.contact_num || "—", color: t.teal },
+              { label: "Address", value: patient.address || "—", color: t.fuchsia },
+            ].map((row) => (
+              <Stack key={row.label} direction="row" justifyContent="space-between" alignItems="flex-start"
+                sx={{ py: 1.2, borderBottom: `1px solid ${t.hairline}` }}>
+                <Typography sx={{ fontSize: 11, fontWeight: 700, color: t.midgray, textTransform: "uppercase", letterSpacing: "0.08em", flexShrink: 0, mr: 2 }}>
+                  {row.label}
+                </Typography>
+                <Typography sx={{ fontSize: 13, fontWeight: 600, color: row.color, textAlign: "right", wordBreak: "break-word" }}>
+                  {row.value}
+                </Typography>
+              </Stack>
+            ))}
+          </Box>
+
+          {/* CTA buttons */}
+          <Box sx={{ background: t.offwhite, px: 4, py: 3 }}>
+            <Stack spacing={1.5}>
+              <Button
+                fullWidth
+                onClick={onRegisterAnother}
+                variant="contained"
+                sx={{
+                  py: 1.5, borderRadius: 3, fontWeight: 800, fontSize: 14,
+                  background: `linear-gradient(135deg, ${t.fuchsia}, ${t.violet})`,
+                  boxShadow: `0 6px 20px ${t.fuchsia}44`,
+                  "&:hover": { background: `linear-gradient(135deg, ${t.fuchsiaDk}, #6200EA)`, boxShadow: `0 8px 24px ${t.fuchsia}55` },
+                  transition: "all 0.2s",
+                }}
+              >
+                🌸 &nbsp; Register Another Patient
+              </Button>
+              <Button
+                fullWidth
+                onClick={onGoHome}
+                variant="outlined"
+                sx={{
+                  py: 1.4, borderRadius: 3, fontWeight: 700, fontSize: 13,
+                  borderColor: t.hairline, color: t.midgray,
+                  "&:hover": { borderColor: t.violet, color: t.violet, background: t.violetLt },
+                }}
+              >
+                ← Back to Patient List
+              </Button>
+            </Stack>
+          </Box>
+        </Paper>
+
+        {/* Floating confetti dots */}
+        {[...Array(6)].map((_, i) => {
+          const colors = [t.fuchsia, t.violet, t.teal, t.amber];
+          const color  = colors[i % colors.length];
+          const delay  = `${i * 0.08}s`;
+          const left   = `${10 + i * 14}%`;
+          return (
+            <Box key={i} sx={{
+              position: "fixed",
+              top: "10%", left,
+              width: 10, height: 10,
+              borderRadius: "50%",
+              background: color,
+              opacity: 0,
+              animation: `confetti 1.2s ${delay} ease-out forwards`,
+              pointerEvents: "none",
+              "@keyframes confetti": {
+                "0%":   { opacity: 1, transform: "translateY(0) scale(1)" },
+                "80%":  { opacity: 0.6 },
+                "100%": { opacity: 0, transform: "translateY(120px) scale(0.4)" },
+              },
+            }} />
+          );
+        })}
+      </Container>
+    </Box>
+  );
+}
+
+// ─── Main Component ────────────────────────────────────────────────────────
 function AddPatient() {
-  const [form, setForm] = useState({
-    first_name: "", last_name: "", age: "",
-    birth_date: "", address: "", contact_num: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [toast, setToast]     = useState({ open: false, message: "", severity: "error" });
+  const [form, setForm]           = useState(EMPTY_FORM);
+  const [loading, setLoading]     = useState(false);
+  const [toast, setToast]         = useState({ open: false, message: "", severity: "error" });
+  const [registered, setRegistered] = useState(null);   // holds last registered patient
+  const [sessionCount, setSessionCount] = useState(0);  // how many this session
   const navigate = useNavigate();
 
   const showToast = (message, severity = "error") =>
@@ -113,13 +289,15 @@ function AddPatient() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://192.168.0.101:3000/patients", {
+      const res = await fetch(`${API_URL}/patients`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error("Failed to add patient");
-      navigate("/");
+      // 🎉 Show plasma success screen instead of navigating away
+      setRegistered({ ...form });
+      setSessionCount((c) => c + 1);
     } catch (err) {
       showToast(err.message, "error");
     } finally {
@@ -127,11 +305,29 @@ function AddPatient() {
     }
   };
 
-  const hasName = form.first_name.trim() && form.last_name.trim();
-  const previewName = hasName
-    ? `${form.first_name} ${form.last_name}`
-    : null;
+  const handleRegisterAnother = () => {
+    setRegistered(null);
+    setForm(EMPTY_FORM);
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
+  // ── Plasma success screen ────────────────────────────────────────────────
+  if (registered) {
+    return (
+      <PlasmaSuccess
+        patient={registered}
+        sessionCount={sessionCount}
+        onRegisterAnother={handleRegisterAnother}
+        onGoHome={() => navigate("/")}
+      />
+    );
+  }
+
+  const hasName = form.first_name.trim() && form.last_name.trim();
+  const previewName = hasName ? `${form.first_name} ${form.last_name}` : null;
+
+  // ── Registration form ────────────────────────────────────────────────────
   return (
     <Box sx={{ background: `linear-gradient(160deg, #FDF0F8 0%, #F3EEFF 50%, #E8F8FF 100%)`, minHeight: "100vh", pb: 6 }}>
       <Container maxWidth="lg" sx={{ pt: 3 }}>
@@ -167,6 +363,15 @@ function AddPatient() {
                     label={`Registering: ${previewName}${form.age ? `, ${form.age} yrs` : ""}`}
                     size="small"
                     sx={{ mt: 1.5, background: "rgba(255,255,255,0.2)", color: "#fff", fontWeight: 700, fontSize: 12, height: 24, borderRadius: 2, border: "1px solid rgba(255,255,255,0.3)" }}
+                  />
+                )}
+
+                {/* Session count badge */}
+                {sessionCount > 0 && (
+                  <Chip
+                    label={`${sessionCount} registered this session`}
+                    size="small"
+                    sx={{ mt: 1, ml: previewName ? 0.5 : 0, background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 11, height: 22, borderRadius: 2 }}
                   />
                 )}
               </Box>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Box, Typography, Paper, Button, Avatar, Stack, Chip } from "@mui/material";
 import PatientTabs from "../components/PatientTabs";
+import { API_URL } from "../config";
 
 // ─── Shared Vibrant Tokens ─────────────────────────────────────────────────
 const t = {
@@ -44,7 +45,7 @@ function PatientForms() {
       try {
         setLoading(true);
         setError("");
-        const res = await fetch(`http://192.168.0.101:3000/patients/${id}`);
+        const res = await fetch(`${API_URL}/patients/${id}`);
         if (!res.ok) throw new Error("Failed to fetch patient data");
         setPatient(await res.json());
       } catch (err) {

@@ -23,6 +23,7 @@ import {
   Avatar,
   InputAdornment,
 } from "@mui/material";
+import { API_URL } from "../config";
 
 // ─── Vibrant OB-Gyne Tokens ────────────────────────────────────────────────────
 const t = {
@@ -89,7 +90,7 @@ function Patients() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("http://192.168.0.101:3000/patients");
+        const res = await fetch(`${API_URL}/patients`);
         if (!res.ok) throw new Error("Failed to fetch patients");
         setPatients(await res.json());
       } catch (err) { setError(err.message); }
@@ -106,7 +107,7 @@ function Patients() {
     if (!deleteId) return;
     setDeleteLoading(true);
     try {
-      const res = await fetch(`http://192.168.0.101:3000/patients/${deleteId}`, { method: "DELETE" });
+      const res = await fetch(`${API_URL}/patients`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete patient");
       setPatients((prev) => prev.filter((p) => p.patient_id !== deleteId));
       setDeleteId(null);

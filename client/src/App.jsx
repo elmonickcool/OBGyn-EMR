@@ -6,6 +6,7 @@ import PatientProfile from "./pages/PatientProfile";
 import PatientForms from "./pages/PatientForms";
 import AddPatient from "./pages/AddPatient";
 import EditPatient from "./pages/EditPatient";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="patients/:id" element={<PatientProfile />} />
         <Route path="patients/:id/forms" element={<PatientForms />} />
         <Route path="patients/:id/edit" element={<EditPatient />} />
+        <Route path="dashboard" element={<Dashboard />} />
 
       </Route>
 
