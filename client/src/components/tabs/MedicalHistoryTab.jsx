@@ -3,6 +3,7 @@ import {
   Box, Typography, Checkbox, TextField, Button,
   Stack, Chip, Snackbar, Alert, Grid,
 } from "@mui/material";
+import { API_URL } from "../../config";
 
 // ─── Shared Vibrant Tokens ─────────────────────────────────────────────────
 const t = {
@@ -36,22 +37,48 @@ const fieldSx = (accent) => ({
 
 function ConditionPill({ condition, selected, onToggle }) {
   return (
-    <Checkbox
-  checked={selected}
-  disableRipple
-  onChange={() => onToggle(condition.condition_id)}
-  sx={{
-    p: 0,
-    mr: 0.5,
-    color: t.midgray,
-    "&.Mui-checked": {
-      color: t.violet,
-    },
-    "& .MuiSvgIcon-root": {
-      fontSize: 24,
-    },
-  }}
-/>
+    <Box
+      onClick={() => onToggle(condition.condition_id)}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        p: 1.5,
+        borderRadius: 2,
+        cursor: "pointer",
+        border: `1px solid ${
+          selected ? t.violet : t.hairline
+        }`,
+        backgroundColor: selected
+          ? t.violetLt
+          : t.white,
+        transition: "0.2s",
+        "&:hover": {
+          backgroundColor: t.violetLt,
+        },
+      }}
+    >
+      <Checkbox
+        checked={selected}
+        disableRipple
+        sx={{
+          p: 0,
+          mr: 1,
+          color: t.midgray,
+          "&.Mui-checked": {
+            color: t.violet,
+          },
+        }}
+      />
+
+      <Typography
+        sx={{
+          fontSize: 14,
+          fontWeight: 600,
+        }}
+      >
+        {condition.condition_name}
+      </Typography>
+    </Box>
   );
 }
 
@@ -67,7 +94,7 @@ function MedicalHistoryTab({ patient, form, setForm }) {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("http://192.168.0.101:3000/conditions");
+        const res = await fetch(`${API_URL}/conditions`);
         setConditions(await res.json());
       } catch (err) {
         console.error("Error fetching conditions:", err);
@@ -99,7 +126,7 @@ function MedicalHistoryTab({ patient, form, setForm }) {
       const results = await Promise.all(
         selectedConditions.map(async (condition_id) => {
           const res = await fetch(
-            `http://192.168.0.101:3000/medical-history/${patient.patient_id}`,
+            `${API_URL}/medical-history/${patient.patient_id}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
