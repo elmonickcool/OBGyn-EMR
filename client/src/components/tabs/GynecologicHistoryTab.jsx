@@ -3,6 +3,7 @@ import {
   Box, Typography, TextField, Button, MenuItem,
   Stack, Chip, Snackbar, Alert, Grid,
 } from "@mui/material";
+import { API_URL } from "../../config";
 
 // ─── Shared Vibrant Tokens ─────────────────────────────────────────────────
 const t = {
@@ -115,7 +116,7 @@ function GynecologicHistoryTab({ patient, form, setForm }) {
   const saveGynecologicHistory = async () => {
     setSaving(true);
     try {
-      const res = await fetch(`http://localhost:3000/gynecologic-history/${patient.patient_id}`, {
+      const res = await fetch(`${API_URL}/gynecologic-history/${patient.patient_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

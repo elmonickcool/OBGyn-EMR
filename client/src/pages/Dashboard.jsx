@@ -18,6 +18,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import { API_URL } from "../config.js";
 
 
 function StatCard({ title, value, icon, color }) {
@@ -59,12 +60,12 @@ function Dashboard() {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/dashboard")
+    fetch(`${API_URL}/dashboard`)
       .then((res) => res.json())
       .then((data) => setStats(data))
       .catch(console.error);
 
-    fetch("http://localhost:3000/patients")
+    fetch(`${API_URL}/patients`)
       .then((res) => res.json())
       .then((data) => setPatients(data))
       .catch(console.error);

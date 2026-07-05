@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box, Typography, TextField, Button, MenuItem, Stack, Snackbar, Alert } from "@mui/material";
+import { API_URL } from "../../config.js";
 
 // ─── Shared Vibrant Tokens ─────────────────────────────────────────────────
 const t = {
@@ -81,7 +82,7 @@ function AllergiesTab({ patient, form, setForm }) {
 
     setSaving(true);
     try {
-      const res = await fetch(`http://localhost:3000/allergies/${patient.patient_id}`, {
+      const res = await fetch(`${API_URL}/allergies/${patient.patient_id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
