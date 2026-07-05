@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Box, Button, Grid, Typography, TextField, Snackbar, Alert, Stack, Chip,
 } from "@mui/material";
+import { API_URL } from "../../config.js";
 
 // ─── Shared Vibrant Tokens ─────────────────────────────────────────────────
 const t = {
@@ -84,7 +85,7 @@ function VitalSignsTab({ patient }) {
     if (!patient?.patient_id) return;
     (async () => {
       try {
-        const res = await fetch(`http://localhost:3000/vital-signs/${patient.patient_id}`);
+        const res = await fetch(`${API_URL}/vital-signs/${patient.patient_id}`);
         if (!res.ok) return;
         const data = await res.json();
         if (data) {
