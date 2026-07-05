@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 24, 2026 at 03:14 PM
+-- Generation Time: Jul 05, 2026 at 08:24 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,7 +39,10 @@ CREATE TABLE `allergies` (
 --
 
 INSERT INTO `allergies` (`allergy_id`, `patient_id`, `allergy_type`, `allergy_name`) VALUES
-(1, 1, 'Food', 'Crab');
+(5, 3, 'Drug', 'Grod'),
+(6, 3, NULL, NULL),
+(7, 13, 'Food', 'Crab'),
+(8, 13, 'Drug', 'Shabu');
 
 -- --------------------------------------------------------
 
@@ -61,9 +64,10 @@ CREATE TABLE `consultation` (
 --
 
 INSERT INTO `consultation` (`consultation_id`, `patient_id`, `consultation_date`, `chief_complaint`, `history_of_present_illness`, `physician_note`) VALUES
-(11, 3, '2026-06-23 23:25:56', '8th weeks pregnant', 'Vommit', 'to be labor next week'),
-(13, 1, '2026-06-24 21:08:13', 'SAqnmwh', 'wahwow', 'qeeqw'),
-(15, 4, '2026-06-24 19:57:24', 'sq', 'qsq', 'qq');
+(31, 8, '2026-06-25 07:10:30', 'Pregnancy', 'Stress', 'Mini labor'),
+(32, 9, '2026-06-25 09:07:53', 'Fever and Headache', 'Patient experienced fever for 3 days with mild headache and fatigue.', 'Prescribed paracetamol and advised rest and hydration.'),
+(34, 13, '2026-06-27 20:21:06', 'naay bata', 'nag suka', 'ipa inom tambal'),
+(35, 14, '2026-06-28 09:56:36', 'sqwq', 'wqw', 'wqw');
 
 -- --------------------------------------------------------
 
@@ -106,7 +110,13 @@ CREATE TABLE `gynecologic_history` (
 
 INSERT INTO `gynecologic_history` (`gyne_id`, `patient_id`, `lmp`, `menarche_age`, `cycle_type`, `cycle_duration`, `dysmenorrhea`, `gravidity`, `parity`, `abortion_count`, `living_children`, `delivery_type`, `contraception`) VALUES
 (1, 3, NULL, NULL, NULL, NULL, 0, 0, 2, 2, 4, NULL, NULL),
-(2, 3, NULL, NULL, NULL, NULL, 0, 0, 2, 2, 4, NULL, NULL);
+(2, 3, NULL, NULL, NULL, NULL, 0, 0, 2, 2, 4, NULL, NULL),
+(4, 23, '2026-05-11', 13, NULL, NULL, 1, 2, 1, 0, 0, NULL, NULL),
+(5, 24, '2026-05-11', 14, NULL, NULL, 1, 3, 1, 1, 0, NULL, NULL),
+(6, 25, '2026-05-20', 14, NULL, NULL, 0, 3, 0, 4, 0, NULL, NULL),
+(7, 26, '2026-06-22', 12, NULL, NULL, 1, 0, 0, 0, 0, NULL, NULL),
+(8, 30, '2026-04-22', 13, NULL, NULL, 0, 3, 1, 1, 0, NULL, NULL),
+(9, 42, '2026-04-26', 13, NULL, NULL, 1, 3, 2, 0, 0, NULL, 'depo for 9 years, pills for 1 year');
 
 -- --------------------------------------------------------
 
@@ -120,18 +130,6 @@ CREATE TABLE `hospitalizations` (
   `details` text DEFAULT NULL,
   `hospitalization_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `hospitalizations`
---
-
-INSERT INTO `hospitalizations` (`hospitalization_id`, `patient_id`, `details`, `hospitalization_date`) VALUES
-(1, 1, NULL, NULL),
-(2, 3, NULL, NULL),
-(3, 3, NULL, NULL),
-(4, 3, 'sqwqs', '2026-06-04'),
-(5, 1, 'sqw', '2026-06-25'),
-(6, 1, 'sqw', '2026-06-25');
 
 -- --------------------------------------------------------
 
@@ -183,11 +181,44 @@ CREATE TABLE `patients` (
 --
 
 INSERT INTO `patients` (`patient_id`, `first_name`, `last_name`, `birth_date`, `age`, `address`, `contact_num`, `created_at`) VALUES
-(1, 'Jane', 'Doe', '2026-06-01', 25, 'Quezon Bukidnon', '09123456789', '2026-06-21 15:34:05'),
-(2, 'Janna', 'Doer', '2026-06-03', 23, 'Quezon City', '09987654321', '2026-06-21 15:35:35'),
-(3, 'Eliza', 'Maria', '1987-04-25', 39, NULL, '09528741963', '2026-06-23 14:39:38'),
-(4, 'Rebecca', 'Laplap', '2000-01-05', 26, NULL, '0916582743', '2026-06-23 16:49:55'),
-(5, 'Krystal', 'Lakambini', '1984-06-29', 41, 'Samar Leyte', '09123456778', '2026-06-23 16:56:00');
+(12, 'Janna', 'Doe', '1995-01-25', 31, 'Blgy7', '0987654321', '2026-06-26 05:42:56'),
+(16, 'Maria', 'Mercedes ', '1990-06-03', 36, 'Blgy 4', '0916472638', '2026-06-28 02:04:42'),
+(17, ' Ruffavie', 'Agpalza', '2001-06-02', 25, 'Balangay 2', '09976813268', '2026-06-28 02:20:53'),
+(18, 'Ailyn', 'Lopez', '1983-01-16', 43, NULL, '', '2026-06-28 02:37:42'),
+(19, 'Charon', 'Berito', '2000-07-10', 25, NULL, '', '2026-06-28 03:16:30'),
+(20, 'Cecille', 'Alicaya ', '1992-10-10', 33, NULL, '', '2026-06-28 03:26:02'),
+(21, 'Jenalyn', 'Ocon', '1996-11-12', 29, NULL, '', '2026-06-28 05:33:19'),
+(22, 'Arrine', 'Tiongco', '1999-12-22', 26, NULL, '', '2026-06-28 05:34:07'),
+(23, 'Caren', 'Moncada', '1997-01-15', 29, NULL, '', '2026-06-28 05:51:07'),
+(24, 'Geneva', 'Doño', '1998-07-11', 27, NULL, '', '2026-06-28 05:52:12'),
+(25, 'Glayzade', 'Armecin', '1995-12-31', 30, NULL, '', '2026-06-28 06:31:01'),
+(26, 'Lenielyn', 'Allosada', '1997-05-15', 29, NULL, '', '2026-06-28 06:58:18'),
+(27, 'Jeanrose', 'Dosdos', '1996-08-11', 29, NULL, '', '2026-06-28 07:54:18'),
+(28, 'Meljoy', 'Camomot', '2005-04-10', 21, NULL, '', '2026-06-28 07:54:53'),
+(29, 'Kristelle', 'Navismos ', '1995-06-02', 31, NULL, '', '2026-06-28 09:35:06'),
+(30, 'Aiza Mea ', 'Naraga', '1991-04-15', 35, NULL, '', '2026-06-28 09:35:50'),
+(31, 'Mary Jean', 'Laquido', '1995-09-19', 30, NULL, '', '2026-06-28 09:36:28'),
+(32, 'Hayvie', 'Jogar', '1994-02-17', 32, NULL, '', '2026-06-28 09:37:02'),
+(33, 'Trisa', 'New', '2004-05-15', 22, NULL, '', '2026-06-29 03:55:18'),
+(34, 'Baticaros', 'Rowena', '2003-10-10', 22, NULL, '', '2026-06-29 04:52:29'),
+(35, 'Ria', 'Bartido', '2001-06-09', 25, NULL, '', '2026-06-29 04:53:33'),
+(36, 'Sarah Jane', 'Laguna', '1996-02-26', 30, NULL, '', '2026-06-29 04:54:15'),
+(37, 'Vanessa Jane', 'Omam', '2007-11-02', 18, NULL, '', '2026-06-29 04:58:42'),
+(38, 'Janice', 'Pajo', '0000-00-00', 0, NULL, '', '2026-06-29 08:15:01'),
+(39, 'Honeylyn', 'Figueras', '1998-05-13', 28, NULL, '', '2026-06-30 01:52:56'),
+(40, 'Allea Mea', 'Mercader', '1999-05-11', 27, NULL, '', '2026-07-01 00:29:03'),
+(41, 'Rizza Joy', 'Polinar', '1992-03-04', 34, NULL, '', '2026-07-01 01:15:45'),
+(42, 'Jean', 'Leopoldo', '1997-01-09', 29, NULL, '', '2026-07-01 01:43:28'),
+(43, 'Ricelgin', 'Gunhuran', '0000-00-00', NULL, NULL, '', '2026-07-01 06:51:43'),
+(44, 'Shiela Mea', 'Basilgo', '2000-03-01', 26, NULL, '', '2026-07-01 06:53:15'),
+(45, 'Lovely Mea ', 'Cobe ', '1999-03-02', 27, NULL, '', '2026-07-03 00:24:08'),
+(46, 'Margie ', 'Abrez', '1997-03-01', 29, NULL, '', '2026-07-03 00:26:58'),
+(47, 'Kimberly', 'Sevilla ', '2007-10-06', 18, NULL, '', '2026-07-03 00:28:35'),
+(48, 'Jessa Mae', 'Cantorne ', '2002-12-25', 23, NULL, '', '2026-07-03 00:29:22'),
+(49, 'Jessa ', 'Quilaton ', '1999-04-09', 27, NULL, '', '2026-07-03 01:09:09'),
+(50, 'Rica Mae', 'Botilla', '1996-05-12', 30, NULL, '', '2026-07-03 05:19:17'),
+(51, 'Lalaine ', 'Garcesa ', '1988-10-18', 37, NULL, '', '2026-07-03 07:30:12'),
+(52, 'Cudal', 'Chenne Rexette', '2000-01-01', 26, NULL, '', '2026-07-03 07:53:10');
 
 -- --------------------------------------------------------
 
@@ -207,24 +238,15 @@ CREATE TABLE `patient_medical_history` (
 --
 
 INSERT INTO `patient_medical_history` (`history_id`, `patient_id`, `condition_id`, `remarks`) VALUES
-(1, 3, 2, 'High Risk'),
-(2, 3, 4, 'High Risk'),
-(3, 3, 5, 'High Risk'),
-(4, 3, 7, 'High Risk'),
-(5, 3, 4, 'Deceased'),
-(6, 3, 5, 'Deceased'),
-(7, 3, 6, 'Deceased'),
-(8, 3, 10, 'Deceased'),
-(9, 3, 1, 'Deceased'),
-(10, 1, 6, ''),
-(11, 1, 3, ''),
-(12, 1, 8, ''),
-(13, 1, 4, ''),
-(14, 1, 10, ''),
-(15, 1, 1, 'saqw'),
-(16, 1, 2, 'saqw'),
-(17, 1, 3, 'saqw'),
-(18, 1, 9, 'saqw');
+(92, 9, 3, 'Minus Virus'),
+(93, 9, 5, 'Minus Virus'),
+(94, 9, 7, 'Minus Virus'),
+(95, 9, 11, 'Minus Virus'),
+(96, 9, 5, 'Virus'),
+(97, 9, 6, 'Virus'),
+(98, 9, 7, 'Virus'),
+(99, 14, 4, 'Hello'),
+(100, 14, 6, 'Hello');
 
 -- --------------------------------------------------------
 
@@ -252,7 +274,8 @@ CREATE TABLE `review_of_systems` (
 
 INSERT INTO `review_of_systems` (`ros_id`, `consultation_id`, `fever`, `weight_loss`, `headache`, `chest_pain`, `shortness_of_breath`, `abdominal_pain`, `urinary_symptoms`, `vaginal_bleeding_discharge`, `others`) VALUES
 (1, 11, 0, 1, 1, 1, 0, 1, 0, 0, 'Malaria'),
-(2, 13, 0, 0, 0, 0, 0, 0, 0, 0, NULL);
+(2, 13, 0, 0, 0, 0, 0, 0, 0, 0, NULL),
+(3, 19, 0, 0, 0, 1, 0, 0, 0, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -276,13 +299,6 @@ CREATE TABLE `social_history` (
   `exposure_history` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `social_history`
---
-
-INSERT INTO `social_history` (`social_history_id`, `patient_id`, `smoking`, `sticks_per_day`, `smoking_years`, `alcohol`, `alcohol_details`, `illicit_drugs`, `drug_details`, `diet`, `exercise`, `living_situation`, `exposure_history`) VALUES
-(1, 1, 1, 54, 4, 0, NULL, 0, NULL, NULL, NULL, 'gi', 'urturfr');
-
 -- --------------------------------------------------------
 
 --
@@ -297,15 +313,34 @@ CREATE TABLE `surgeries` (
   `details` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `surgeries`
+-- Table structure for table `vital_signs`
 --
 
-INSERT INTO `surgeries` (`surgery_id`, `patient_id`, `surgery_name`, `surgery_date`, `details`) VALUES
-(1, 1, 'Facial', '2026-06-05', 'Fine'),
-(2, 3, 'My abs', '7192-01-14', 'qww'),
-(3, 1, 'sqqw', '2026-06-26', 'agogoq'),
-(4, 1, 'sqqw', '2026-06-26', 'sasq');
+CREATE TABLE `vital_signs` (
+  `vital_id` int(11) NOT NULL,
+  `patient_id` int(11) NOT NULL,
+  `consultation_id` int(11) DEFAULT NULL,
+  `weight` decimal(5,2) DEFAULT NULL,
+  `height` decimal(5,2) DEFAULT NULL,
+  `bmi` decimal(5,2) DEFAULT NULL,
+  `blood_pressure` varchar(10) DEFAULT NULL,
+  `pulse_rate` int(11) DEFAULT NULL,
+  `respiratory_rate` int(11) DEFAULT NULL,
+  `temperature` decimal(4,1) DEFAULT NULL,
+  `oxygen_saturation` int(11) DEFAULT NULL,
+  `pain_scale` tinyint(4) DEFAULT NULL,
+  `recorded_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `vital_signs`
+--
+
+INSERT INTO `vital_signs` (`vital_id`, `patient_id`, `consultation_id`, `weight`, `height`, `bmi`, `blood_pressure`, `pulse_rate`, `respiratory_rate`, `temperature`, `oxygen_saturation`, `pain_scale`, `recorded_at`) VALUES
+(1, 12, NULL, 49.00, 162.56, 18.54, '52', 3, 4, 2.0, -2, 4, '2026-06-26 22:28:48');
 
 --
 -- Indexes for dumped tables
@@ -316,7 +351,7 @@ INSERT INTO `surgeries` (`surgery_id`, `patient_id`, `surgery_name`, `surgery_da
 --
 ALTER TABLE `allergies`
   ADD PRIMARY KEY (`allergy_id`),
-  ADD KEY `patient_id` (`patient_id`);
+  ADD KEY `allergies_ibfk_1` (`patient_id`);
 
 --
 -- Indexes for table `consultation`
@@ -371,8 +406,7 @@ ALTER TABLE `patient_medical_history`
 -- Indexes for table `review_of_systems`
 --
 ALTER TABLE `review_of_systems`
-  ADD PRIMARY KEY (`ros_id`),
-  ADD KEY `consultation_id` (`consultation_id`);
+  ADD PRIMARY KEY (`ros_id`);
 
 --
 -- Indexes for table `social_history`
@@ -389,6 +423,12 @@ ALTER TABLE `surgeries`
   ADD KEY `patient_id` (`patient_id`);
 
 --
+-- Indexes for table `vital_signs`
+--
+ALTER TABLE `vital_signs`
+  ADD PRIMARY KEY (`vital_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -396,31 +436,31 @@ ALTER TABLE `surgeries`
 -- AUTO_INCREMENT for table `allergies`
 --
 ALTER TABLE `allergies`
-  MODIFY `allergy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `allergy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `consultation`
 --
 ALTER TABLE `consultation`
-  MODIFY `consultation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `consultation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `family_history`
 --
 ALTER TABLE `family_history`
-  MODIFY `family_history_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `family_history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `gynecologic_history`
 --
 ALTER TABLE `gynecologic_history`
-  MODIFY `gyne_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `gyne_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `hospitalizations`
 --
 ALTER TABLE `hospitalizations`
-  MODIFY `hospitalization_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `hospitalization_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `medical_conditions`
@@ -432,84 +472,37 @@ ALTER TABLE `medical_conditions`
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `patient_medical_history`
 --
 ALTER TABLE `patient_medical_history`
-  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
 -- AUTO_INCREMENT for table `review_of_systems`
 --
 ALTER TABLE `review_of_systems`
-  MODIFY `ros_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ros_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `social_history`
 --
 ALTER TABLE `social_history`
-  MODIFY `social_history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `social_history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `surgeries`
 --
 ALTER TABLE `surgeries`
-  MODIFY `surgery_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `surgery_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- Constraints for dumped tables
+-- AUTO_INCREMENT for table `vital_signs`
 --
-
---
--- Constraints for table `allergies`
---
-ALTER TABLE `allergies`
-  ADD CONSTRAINT `allergies_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`);
-
---
--- Constraints for table `family_history`
---
-ALTER TABLE `family_history`
-  ADD CONSTRAINT `family_history_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`);
-
---
--- Constraints for table `gynecologic_history`
---
-ALTER TABLE `gynecologic_history`
-  ADD CONSTRAINT `gynecologic_history_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`);
-
---
--- Constraints for table `hospitalizations`
---
-ALTER TABLE `hospitalizations`
-  ADD CONSTRAINT `hospitalizations_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`);
-
---
--- Constraints for table `patient_medical_history`
---
-ALTER TABLE `patient_medical_history`
-  ADD CONSTRAINT `patient_medical_history_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`),
-  ADD CONSTRAINT `patient_medical_history_ibfk_2` FOREIGN KEY (`condition_id`) REFERENCES `medical_conditions` (`condition_id`);
-
---
--- Constraints for table `review_of_systems`
---
-ALTER TABLE `review_of_systems`
-  ADD CONSTRAINT `review_of_systems_ibfk_1` FOREIGN KEY (`consultation_id`) REFERENCES `consultation` (`consultation_id`);
-
---
--- Constraints for table `social_history`
---
-ALTER TABLE `social_history`
-  ADD CONSTRAINT `social_history_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`);
-
---
--- Constraints for table `surgeries`
---
-ALTER TABLE `surgeries`
-  ADD CONSTRAINT `surgeries_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`patient_id`);
+ALTER TABLE `vital_signs`
+  MODIFY `vital_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

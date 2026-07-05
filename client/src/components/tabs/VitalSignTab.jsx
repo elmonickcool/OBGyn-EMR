@@ -117,7 +117,7 @@ function VitalSignsTab({ patient }) {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:3000/vital-signs/${patient.patient_id}`,
+        `${API_URL}/vital-signs/${patient.patient_id}`,
         { method: exists ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) }
       );
       if (!res.ok) throw new Error("Failed to save vital signs");
