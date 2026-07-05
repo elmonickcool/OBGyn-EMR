@@ -170,7 +170,7 @@ function PatientProfile() {
       }
     };
 
-    const BASE = "http://192.168.0.101:3000";
+    const BASE = `${API_URL}`;
     fetchPatient();
     fetchResource(`${BASE}/medical-history/${id}`,     setMedicalHistory);
     fetchResource(`${BASE}/vital-signs/${id}`,          setVitalSigns);
