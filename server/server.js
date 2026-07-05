@@ -71,7 +71,7 @@ app.get("/dashboard", (req, res) => {
       db.query(
         `
         SELECT COUNT(*) AS todayConsultations
-        FROM consultations
+        FROM consultation
         WHERE DATE(created_at) = CURDATE()
         `,
         (err, consultations) => {
