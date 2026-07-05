@@ -1,215 +1,230 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
 
-const { Connector } = require("@google-cloud/cloud-sql-connector");
-const mysql = require("mysql2/promise");
+const express = require("express");
+const mysql = require("mysql2");
+const cors = require("cors");
 
 const app = express();
 
+require("dotenv").config()
 /* ================= MIDDLEWARE ================= */
 app.use(cors());
 app.use(express.json());
 
-/* ================= CLOUD SQL CONNECTOR ================= */
+/* ================= DATABASE ================= */
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
 
-const connector = new Connector();
-let db;
-
-async function initDB() {
-  try {
-    const clientOpts = await connector.getOptions({
-      instanceConnectionName: process.env.INSTANCE_CONNECTION_NAME,
-      ipType: "PUBLIC",
-    });
-
-    db = await mysql.createConnection({
-      ...clientOpts,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-    });
-
-    console.log("✅ Connected to Cloud SQL (Connector)");
-
-    // 🚀 START SERVER ONLY AFTER DB CONNECTS
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
-
-  } catch (err) {
-    console.error("❌ DB Connection failed:", err);
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection failed:", err);
+    return;
   }
-}
-
-initDB();
-
-/* ================= HEALTH CHECK ================= */
-app.get("/", (req, res) => {
-  res.send("Medical Records API is running 🚀");
+  console.log("Connected to database");
 });
 
 /* ================= PATIENTS ================= */
 
 // GET all patients
-app.get("/patients", async (req, res) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM patients");
-    res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+app.get("/patients", (req, res) => {
+  db.query("SELECT * FROM patients", (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
+app.get("/", (req, res) => {
+  res.send("Medical Records API is running 🚀");
 });
 
 // GET patient by ID
-app.get("/patients/:id", async (req, res) => {
-  try {
-    const [rows] = await db.query(
-      "SELECT * FROM patients WHERE patient_id = ?",
-      [req.params.id]
-    );
+app.get("/patients/:id", (req, res) => {
+  db.query(
+    "SELECT * FROM patients WHERE patient_id = ?",
+    [req.params.id],
+    (err, results) => {
+      if (err) return res.status(500).json({ error: err.message });
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "Patient not found" });
+      if (!results.length) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
+
+      res.json(results[0]);
     }
-
-    res.json(rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  );
 });
+/* ================= DASHBOARD ================= */
 
-// ADD patient
-app.post("/patients", async (req, res) => {
-  try {
-    const {
-      first_name,
-      last_name,
-      age,
-      birth_date,
-      address,
-      contact_num,
-    } = req.body;
+app.get("/dashboard", (req, res) => {
+  const dashboard = {};
 
-    const [result] = await db.query(
-      `INSERT INTO patients 
-      (first_name, last_name, age, birth_date, address, contact_num)
-      VALUES (?, ?, ?, ?, ?, ?)`,
-      [first_name, last_name, age, birth_date, address || null, contact_num]
-    );
+  db.query(
+    "SELECT COUNT(*) AS totalPatients FROM patients",
+    (err, patients) => {
+      if (err) return res.status(500).json({ error: err.message });
 
-    res.status(201).json({
-      message: "Patient added successfully",
-      patient_id: result.insertId,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+      dashboard.totalPatients = patients[0].totalPatients;
+
+      db.query(
+        `
+        SELECT COUNT(*) AS todayConsultations
+        FROM consultations
+        WHERE DATE(created_at) = CURDATE()
+        `,
+        (err, consultations) => {
+          if (err) return res.status(500).json({ error: err.message });
+
+          dashboard.todayConsultations =
+            consultations[0].todayConsultations;
+
+          db.query(
+            `
+            SELECT COUNT(*) AS totalAllergies
+            FROM allergies
+            `,
+            (err, allergies) => {
+              if (err)
+                return res.status(500).json({ error: err.message });
+
+              dashboard.totalAllergies =
+                allergies[0].totalAllergies;
+
+              db.query(
+                `
+                SELECT COUNT(*) AS totalSurgeries
+                FROM surgeries
+                `,
+                (err, surgeries) => {
+                  if (err)
+                    return res.status(500).json({ error: err.message });
+
+                  dashboard.totalSurgeries =
+                    surgeries[0].totalSurgeries;
+
+                  res.json(dashboard);
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
 });
 
 // UPDATE patient
-app.put("/patients/:id", async (req, res) => {
-  try {
-    const { first_name, last_name, age, birth_date, address, contact_num } =
-      req.body;
+app.put("/patients/:id", (req, res) => {
+  const { first_name, last_name, age, birth_date, address, contact_num } = req.body;
+  const sql = `
+    UPDATE patients
+    SET first_name = ?, last_name = ?, age = ?, birth_date = ?, address = ?, contact_num = ?
+    WHERE patient_id = ?
+  `;
 
-    const [result] = await db.query(
-      `UPDATE patients
-       SET first_name=?, last_name=?, age=?, birth_date=?, address=?, contact_num=?
-       WHERE patient_id=?`,
-      [
-        first_name,
-        last_name,
-        age,
-        birth_date,
-        address || null,
-        contact_num,
-        req.params.id,
-      ]
-    );
+  db.query(
+    sql,
+    [first_name, last_name, age, birth_date, address || null, contact_num, req.params.id],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Patient not found" });
+      res.json({ message: "Patient updated successfully" });
     }
-
-    res.json({ message: "Patient updated successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  );
 });
 
 // DELETE patient
-app.delete("/patients/:id", async (req, res) => {
-  try {
-    const [result] = await db.query(
-      "DELETE FROM patients WHERE patient_id = ?",
-      [req.params.id]
-    );
-
+app.delete("/patients/:id", (req, res) => {
+  db.query("DELETE FROM patients WHERE patient_id = ?", [req.params.id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Patient not found" });
     }
 
     res.json({ message: "Patient deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  });
+});
+
+// ADD patient
+app.post("/patients", (req, res) => {
+  const {
+    first_name,
+    last_name,
+    age,
+    birth_date,
+    address,
+    contact_num,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO patients
+    (first_name, last_name, age, birth_date, address, contact_num)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    sql,
+    [first_name, last_name, age, birth_date, address || null, contact_num],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      res.status(201).json({
+        message: "Patient added successfully",
+        patient_id: result.insertId,
+      });
+    }
+  );
 });
 
 /* ================= CONDITIONS ================= */
-app.get("/conditions", async (req, res) => {
-  try {
-    const [rows] = await db.query("SELECT * FROM medical_conditions");
-    res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+
+app.get("/conditions", (req, res) => {
+  db.query("SELECT * FROM medical_conditions", (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
 });
 
-/* ================= DASHBOARD ================= */
-app.get("/dashboard", async (req, res) => {
-  try {
-    const dashboard = {};
-
-    const [patients] = await db.query(
-      "SELECT COUNT(*) AS totalPatients FROM patients"
-    );
-    dashboard.totalPatients = patients[0].totalPatients;
-
-    const [consultations] = await db.query(`
-      SELECT COUNT(*) AS todayConsultations
-      FROM consultations
-      WHERE DATE(created_at) = CURDATE()
-    `);
-    dashboard.todayConsultations = consultations[0].todayConsultations;
-
-    const [allergies] = await db.query(
-      "SELECT COUNT(*) AS totalAllergies FROM allergies"
-    );
-    dashboard.totalAllergies = allergies[0].totalAllergies;
-
-    const [surgeries] = await db.query(
-      "SELECT COUNT(*) AS totalSurgeries FROM surgeries"
-    );
-    dashboard.totalSurgeries = surgeries[0].totalSurgeries;
-
-    res.json(dashboard);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/* ================= ROUTES ================= */
+/* ================= CONSULTATIONS ROUTES ================= */
 app.use("/consultations", require("./routes/consultation"));
+
+/* ================= MEDICAL HISTORY ROUTES ================= */
 app.use("/medical-history", require("./routes/medicalHistory"));
+
+/* ================= HOSPITALIZATION ROUTES ================= */
 app.use("/hospitalizations", require("./routes/hospitalization"));
+
+/* ================= SURGERIES ROUTES ================= */
 app.use("/surgeries", require("./routes/surgeries"));
+
+/* ================= ALLERGIES ROUTES ================= */
 app.use("/allergies", require("./routes/allergies"));
+
+/* ================= SOCIAL HISTORY ROUTES ================= */
 app.use("/social-history", require("./routes/socialHistory"));
+
+/* ================= FAMILY HISTORY ROUTES ================= */
 app.use("/family-history", require("./routes/familyHistory"));
+
+/* ================= GYNECOLOGIC HISTORY ROUTES ================= */
 app.use("/gynecologic-history", require("./routes/gynecologicHistory"));
+
+/* ================= REVIEW OF SYSTEMS ROUTES ================= */
 app.use("/review-of-systems", require("./routes/reviewOfSystems"));
+
+/* ================= VITAL SIGNS ROUTES ================= */
 app.use("/vital-signs", require("./routes/vitalSign"));
 
+
 /* ================= SERVER START ================= */
+const PORT = process.env.PORT||3000;
+
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
