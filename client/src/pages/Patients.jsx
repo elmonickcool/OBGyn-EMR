@@ -107,7 +107,7 @@ function Patients() {
     if (!deleteId) return;
     setDeleteLoading(true);
     try {
-      const res = await fetch(`${API_URL}/patients`, { method: "DELETE" });
+      const res = await fetch(`${API_URL}/patients/${deleteId}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete patient");
       setPatients((prev) => prev.filter((p) => p.patient_id !== deleteId));
       setDeleteId(null);
