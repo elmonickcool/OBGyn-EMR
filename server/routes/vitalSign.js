@@ -34,7 +34,7 @@ router.post("/:patientId", async (req, res) => {
 
   try {
     const [rows] = await db.query(
-      "SELECT vital_sign_id FROM vital_signs WHERE patient_id = ?",
+      "SELECT vital_id FROM vital_signs WHERE patient_id = ?",
       [patientId]
     );
 
@@ -57,7 +57,7 @@ router.post("/:patientId", async (req, res) => {
 
     res.status(201).json({
       message: "Vital signs added successfully.",
-      vital_sign_id: result.insertId,
+      vital_id: result.insertId,
     });
   } catch (err) {
     console.error(err);
