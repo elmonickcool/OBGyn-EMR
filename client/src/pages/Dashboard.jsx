@@ -329,7 +329,7 @@ function Dashboard() {
             />
             <StatCard
               label="Average Patient Age"
-              value={stats.averageAge}
+              value={ Math.round(stats.averageAge) }
               icon={<CakeRoundedIcon fontSize="small" />}
               gradient={`linear-gradient(135deg, ${COLORS.cyan}, #00BFFF)`}
             />
