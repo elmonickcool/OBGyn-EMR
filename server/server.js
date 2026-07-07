@@ -30,7 +30,7 @@ db.connect((err) => {
 
 // GET all patients
 app.get("/patients", (req, res) => {
-  db.query("SELECT * FROM patients ORDER BY patient_id DESC LIMIT 10", (err, results) => {
+  db.query("SELECT * FROM patients ORDER BY patient_id DESC ", (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(results);
   });
