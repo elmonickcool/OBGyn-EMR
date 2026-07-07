@@ -188,8 +188,8 @@ function Dashboard() {
   const [patientChartData, setPatientChartData] = useState([]);
   const [stats, setStats] = useState({
     totalPatients: 0,
-    todayConsultations: 0,
     todayAppointments: 0,
+    todayConsultations: 0,
     newPatients: 0,
   });
   const [patients, setPatients] = useState([]);
@@ -316,7 +316,7 @@ function Dashboard() {
             />
             <StatCard
               label="Consultations"
-              value={stats.todayConsultations ?? 12}
+              value={stats.todayConsultations}
               icon={<MonitorHeartRoundedIcon fontSize="small" />}
               gradient={`linear-gradient(135deg, ${COLORS.teal}, #0E7A70)`}
             />
