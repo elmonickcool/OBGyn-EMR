@@ -86,15 +86,25 @@ app.get("/dashboard", (req, res) => {
 
               dashboard.totalAllergies = allergyResult[0].totalAllergies;
 
-              // Total Surgeries
+              // New Patients Today
               db.query(
-                "SELECT COUNT(*) AS totalSurgeries FROM surgeries",
-                (err, surgeryResult) => {
+                "SELECT COUNT(*) AS newPatients FROM patients WHERE created_at >= CURDATE()",
+                (err, newPatientResult) => {
+                  if (err) return res.status(500).json({ error: err.message });
+
+                  dashboard.newPatients = newPatientResult[0].newPatients;
+
+                  // Total Surgeries
+                  db.query(
+                    "SELECT COUNT(*) AS totalSurgeries FROM surgeries",
+                    (err, surgeryResult) => {
                   if (err) return res.status(500).json({ error: err.message });
 
                   dashboard.totalSurgeries = surgeryResult[0].totalSurgeries;
 
-                  res.json(dashboard);
+                      res.json(dashboard);
+                    }
+                  );
                 }
               );
             }

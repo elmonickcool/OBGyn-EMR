@@ -190,7 +190,7 @@ function Dashboard() {
     totalPatients: 0,
     todayAppointments: 0,
     todayConsultations: 0,
-    newPatients: 0,
+    todayPatients: 0,
   });
   const [patients, setPatients] = useState([]);
 
@@ -315,14 +315,14 @@ function Dashboard() {
               gradient={`linear-gradient(135deg, ${COLORS.gold}, #E88A2E)`}
             />
             <StatCard
-              label="Consultations"
+              label="Today's Consultations"
               value={stats.todayConsultations}
               icon={<MonitorHeartRoundedIcon fontSize="small" />}
               gradient={`linear-gradient(135deg, ${COLORS.teal}, #0E7A70)`}
             />
             <StatCard
               label="New Patients"
-              value={stats.newPatients ?? 5}
+              value={stats.todayPatients}
               icon={<FavoriteRoundedIcon fontSize="small" />}
               gradient={`linear-gradient(135deg, ${COLORS.violet}, #4A2360)`}
             />
