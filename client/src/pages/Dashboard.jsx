@@ -19,7 +19,15 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { API_URL } from "../config.js";
-
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 
 function StatCard({ title, value, icon, color }) {
   return (
@@ -51,6 +59,8 @@ function StatCard({ title, value, icon, color }) {
 }
 
 function Dashboard() {
+  const [patientChartData, setPatientChartData] = useState([]);
+
   const [stats, setStats] = useState({
     totalPatients: 0,
     todayConsultations: 0,
@@ -69,6 +79,11 @@ function Dashboard() {
       .then((res) => res.json())
       .then((data) => setPatients(data))
       .catch(console.error);
+    
+    fetch(`${API_URL}/dashboard/patients-per-day`)
+  .then((res) => res.json())
+  .then((data) => setPatientChartData(data))
+  .catch(console.error);
   }, []);
 
   return (
@@ -172,16 +187,37 @@ function Dashboard() {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={4}>
-          <Paper elevation={0} sx={{ p: 3, borderRadius: 4, height: 350 }}>
-            <Typography variant="h6" fontWeight="bold">
-              Today's Schedule
-            </Typography>
-            <Typography color="text.secondary" sx={{ mt: 2 }}>
-              Upcoming appointments...
-            </Typography>
-          </Paper>
-        </Grid>
+       <Grid item xs={12} md={4}>
+  <Paper
+    elevation={0}
+    sx={{
+      p: 3,
+      borderRadius: 4,
+      height: 350,
+    }}
+  >
+    <Typography variant="h6" fontWeight="bold" mb={2}>
+      Patients Per Day
+    </Typography>
+
+    <ResponsiveContainer width="100%" height={260}>
+      <LineChart data={patientChartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis allowDecimals={false} />
+        <Tooltip />
+        <Line
+          type="monotone"
+          dataKey="patients"
+          stroke="#7B2FF7"
+          strokeWidth={3}
+          dot={{ r: 5 }}
+          activeDot={{ r: 7 }}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  </Paper>
+</Grid>
       </Grid>
     </Container>
   );

@@ -115,6 +115,32 @@ app.get("/dashboard", (req, res) => {
   );
 });
 
+app.get("/dashboard/patients-per-day", (req, res) => {
+  const sql = `
+    SELECT
+      DATE(created_at) AS date,
+      COUNT(*) AS patients
+    FROM patients
+    WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    GROUP BY DATE(created_at)
+    ORDER BY DATE(created_at);
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json(err);
+
+    const formatted = results.map((row) => ({
+      date: new Date(row.date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
+      patients: row.patients,
+    }));
+
+    res.json(formatted);
+  });
+});
+
 // UPDATE patient
 app.put("/patients/:id", (req, res) => {
   const { first_name, last_name, age, birth_date, address, contact_num } = req.body;
