@@ -18,6 +18,7 @@ import {
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import MonitorHeartRoundedIcon from "@mui/icons-material/MonitorHeartRounded";
+import CakeRoundedIcon from "@mui/icons-material/CakeRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import { API_URL } from "../config.js";
 import {
@@ -325,6 +326,12 @@ function Dashboard() {
               value={stats.newPatients}
               icon={<FavoriteRoundedIcon fontSize="small" />}
               gradient={`linear-gradient(135deg, ${COLORS.violet}, #4A2360)`}
+            />
+            <StatCard
+              label="Average Patient Age"
+              value={Math.round(stats.averageAge)}
+              icon={<CakeRoundedIcon fontSize="small" />}
+              gradient={`linear-gradient(135deg, ${COLORS.cyan}, #00BFFF)`}
             />
           </Stack>
         </Container>

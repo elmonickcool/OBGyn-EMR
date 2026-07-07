@@ -102,6 +102,14 @@ app.get("/dashboard", (req, res) => {
 
                   dashboard.totalSurgeries = surgeryResult[0].totalSurgeries;
 
+                  // average age of patients
+                  db.query(
+                    "SELECT AVG(age) AS averageAge FROM patients",
+                    (err, ageResult) => {
+                      if (err) return res.status(500).json({ error: err.message });
+
+                      dashboard.averageAge = ageResult[0].averageAge;
+                    });
                       res.json(dashboard);
                     }
                   );
