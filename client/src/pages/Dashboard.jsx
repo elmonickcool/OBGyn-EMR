@@ -97,8 +97,10 @@ function SonarSweep() {
             from: { transform: "rotate(0deg)" },
             to: { transform: "rotate(360deg)" },
           },
-          maskImage: "radial-gradient(circle, transparent 30%, black 31%, black 100%)",
-          WebkitMaskImage: "radial-gradient(circle, transparent 30%, black 31%, black 100%)",
+          maskImage:
+            "radial-gradient(circle, transparent 30%, black 31%, black 100%)",
+          WebkitMaskImage:
+            "radial-gradient(circle, transparent 30%, black 31%, black 100%)",
         }}
       />
       <Box
@@ -238,8 +240,15 @@ function Dashboard() {
             spacing={1}
           >
             <Box>
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-                <FavoriteRoundedIcon sx={{ fontSize: 16, color: COLORS.gold }} />
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={1}
+                sx={{ mb: 1 }}
+              >
+                <FavoriteRoundedIcon
+                  sx={{ fontSize: 16, color: COLORS.gold }}
+                />
                 <Typography
                   sx={{
                     fontFamily: "'Manrope', sans-serif",
@@ -288,14 +297,17 @@ function Dashboard() {
         </Container>
 
         {/* Floating glass stat cards, overlapping the banner edge */}
-        <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1, mt: { xs: 3, md: 4 } }}>
+        <Container
+          maxWidth="xl"
+          sx={{ position: "relative", zIndex: 1, mt: { xs: 3, md: 4 } }}
+        >
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-           <StatCard
-  title="Consultations"
-  value={stats.totalConsultations}
-  icon={<MedicalServicesIcon />}
-  color="linear-gradient(135deg,#10B981,#34D399)"
-/>
+            <StatCard
+              title="TotalPatients"
+              value={stats.totalPatients}
+              icon={<MedicalServicesIcon />}
+              color="linear-gradient(135deg,#10B981,#34D399)"
+            />
             <StatCard
               label="Today's Appointments"
               value={stats.todayAppointments ?? 18}
@@ -334,7 +346,12 @@ function Dashboard() {
                 flexDirection: "column",
               }}
             >
-              <Stack direction="row" justifyContent="space-between" alignItems="baseline" mb={1}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="baseline"
+                mb={1}
+              >
                 <Typography
                   sx={{
                     fontFamily: "'Fraunces', serif",
@@ -400,11 +417,17 @@ function Dashboard() {
                           key={patient.patient_id}
                           sx={{
                             "&:hover": { bgcolor: "#FDF0F4" },
-                            "& td": { borderBottom: `1px solid ${COLORS.border}` },
+                            "& td": {
+                              borderBottom: `1px solid ${COLORS.border}`,
+                            },
                           }}
                         >
                           <TableCell>
-                            <Stack direction="row" alignItems="center" spacing={1.5}>
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={1.5}
+                            >
                               <Avatar
                                 sx={{
                                   width: 32,
@@ -422,22 +445,36 @@ function Dashboard() {
                                 {patient.last_name?.[0]}
                               </Avatar>
                               <Typography
-                                sx={{ fontFamily: "'Fraunces', serif", fontSize: 15, color: COLORS.ink }}
+                                sx={{
+                                  fontFamily: "'Fraunces', serif",
+                                  fontSize: 15,
+                                  color: COLORS.ink,
+                                }}
                               >
                                 {patient.first_name} {patient.last_name}
                               </Typography>
                             </Stack>
                           </TableCell>
                           <TableCell
-                            sx={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: COLORS.ink }}
+                            sx={{
+                              fontFamily: "'IBM Plex Mono', monospace",
+                              fontSize: 13,
+                              color: COLORS.ink,
+                            }}
                           >
                             {patient.age}
                           </TableCell>
                           <TableCell
-                            sx={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: COLORS.textMuted }}
+                            sx={{
+                              fontFamily: "'Manrope', sans-serif",
+                              fontSize: 13,
+                              color: COLORS.textMuted,
+                            }}
                           >
                             {patient.updated_at
-                              ? new Date(patient.updated_at).toLocaleDateString()
+                              ? new Date(
+                                  patient.updated_at,
+                                ).toLocaleDateString()
                               : "—"}
                           </TableCell>
                         </TableRow>
@@ -476,23 +513,43 @@ function Dashboard() {
               <Divider sx={{ borderColor: COLORS.border, mb: 2 }} />
               <Box sx={{ flex: 1 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={patientChartData} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
+                  <LineChart
+                    data={patientChartData}
+                    margin={{ top: 4, right: 8, left: -18, bottom: 0 }}
+                  >
                     <defs>
-                      <linearGradient id="pulseLine" x1="0" y1="0" x2="1" y2="0">
+                      <linearGradient
+                        id="pulseLine"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                      >
                         <stop offset="0%" stopColor={COLORS.fuchsia} />
                         <stop offset="100%" stopColor={COLORS.teal} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke={COLORS.border}
+                    />
                     <XAxis
                       dataKey="date"
-                      tick={{ fontFamily: "'Manrope', sans-serif", fontSize: 11, fill: COLORS.textMuted }}
+                      tick={{
+                        fontFamily: "'Manrope', sans-serif",
+                        fontSize: 11,
+                        fill: COLORS.textMuted,
+                      }}
                       axisLine={{ stroke: COLORS.border }}
                       tickLine={false}
                     />
                     <YAxis
                       allowDecimals={false}
-                      tick={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, fill: COLORS.textMuted }}
+                      tick={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: 11,
+                        fill: COLORS.textMuted,
+                      }}
                       axisLine={false}
                       tickLine={false}
                     />
