@@ -322,7 +322,7 @@ function Dashboard() {
             />
             <StatCard
               label="New Patients"
-              value={stats.todayPatients}
+              value={stats.newPatients}
               icon={<FavoriteRoundedIcon fontSize="small" />}
               gradient={`linear-gradient(135deg, ${COLORS.violet}, #4A2360)`}
             />
