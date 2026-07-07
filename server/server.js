@@ -109,8 +109,8 @@ app.get("/dashboard", (req, res) => {
                       if (err) return res.status(500).json({ error: err.message });
 
                       dashboard.averageAge = ageResult[0].averageAge;
-                    });
                       res.json(dashboard);
+                    });
                     }
                   );
                 }
