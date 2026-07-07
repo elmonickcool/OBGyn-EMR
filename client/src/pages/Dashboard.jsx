@@ -303,7 +303,7 @@ function Dashboard() {
         >
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <StatCard
-              title="TotalPatients"
+              label="TotalPatients"
               value={stats.totalPatients}
               icon={<MedicalServicesIcon />}
               color="linear-gradient(135deg,#10B981,#34D399)"
