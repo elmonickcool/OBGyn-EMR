@@ -61,48 +61,38 @@ app.get("/patients/:id", (req, res) => {
 app.get("/dashboard", (req, res) => {
   const dashboard = {};
 
+  // Total Patients
   db.query(
     "SELECT COUNT(*) AS totalPatients FROM patients",
-    (err, patients) => {
+    (err, patientResult) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      dashboard.totalPatients = patients[0].totalPatients;
+      dashboard.totalPatients = patientResult[0].totalPatients;
 
+      // Total Consultations
       db.query(
-        `
-        SELECT COUNT(*) AS todayConsultations
-        FROM consultation
-        WHERE DATE(created_at) = CURDATE()
-        `,
-        (err, consultations) => {
+        "SELECT COUNT(*) AS totalConsultations FROM consultation",
+        (err, consultationResult) => {
           if (err) return res.status(500).json({ error: err.message });
 
-          dashboard.todayConsultations =
-            consultations[0].todayConsultations;
+          dashboard.totalConsultations =
+            consultationResult[0].totalConsultations;
 
+          // Total Allergies
           db.query(
-            `
-            SELECT COUNT(*) AS totalAllergies
-            FROM allergies
-            `,
-            (err, allergies) => {
-              if (err)
-                return res.status(500).json({ error: err.message });
+            "SELECT COUNT(*) AS totalAllergies FROM allergies",
+            (err, allergyResult) => {
+              if (err) return res.status(500).json({ error: err.message });
 
-              dashboard.totalAllergies =
-                allergies[0].totalAllergies;
+              dashboard.totalAllergies = allergyResult[0].totalAllergies;
 
+              // Total Surgeries
               db.query(
-                `
-                SELECT COUNT(*) AS totalSurgeries
-                FROM surgeries
-                `,
-                (err, surgeries) => {
-                  if (err)
-                    return res.status(500).json({ error: err.message });
+                "SELECT COUNT(*) AS totalSurgeries FROM surgeries",
+                (err, surgeryResult) => {
+                  if (err) return res.status(500).json({ error: err.message });
 
-                  dashboard.totalSurgeries =
-                    surgeries[0].totalSurgeries;
+                  dashboard.totalSurgeries = surgeryResult[0].totalSurgeries;
 
                   res.json(dashboard);
                 }

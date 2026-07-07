@@ -15,7 +15,7 @@ import {
   TableRow,
   Divider,
 } from "@mui/material";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import MonitorHeartRoundedIcon from "@mui/icons-material/MonitorHeartRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
@@ -290,12 +290,12 @@ function Dashboard() {
         {/* Floating glass stat cards, overlapping the banner edge */}
         <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1, mt: { xs: 3, md: 4 } }}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <StatCard
-              label="Total Patients"
-              value={stats.totalPatients}
-              icon={<PeopleAltRoundedIcon fontSize="small" />}
-              gradient={`linear-gradient(135deg, ${COLORS.fuchsia}, ${COLORS.fuchsiaDeep})`}
-            />
+           <StatCard
+  title="Consultations"
+  value={stats.totalConsultations}
+  icon={<MedicalServicesIcon />}
+  color="linear-gradient(135deg,#10B981,#34D399)"
+/>
             <StatCard
               label="Today's Appointments"
               value={stats.todayAppointments ?? 18}
