@@ -71,12 +71,12 @@ app.get("/dashboard", (req, res) => {
 
       // Total Consultations
       db.query(
-        "SELECT COUNT(*) AS totalConsultations FROM consultation",
+        "SELECT COUNT(*) AS todayConsultations FROM consultation WHERE consultation_date >= CURDATE()",
         (err, consultationResult) => {
           if (err) return res.status(500).json({ error: err.message });
 
-          dashboard.totalConsultations =
-            consultationResult[0].totalConsultations;
+          dashboard.todayConsultations =
+            consultationResult[0].todayConsultations;
 
           // Total Allergies
           db.query(
