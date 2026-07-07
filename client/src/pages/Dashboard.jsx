@@ -377,7 +377,7 @@ function Dashboard() {
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      {["Name", "Age"].map((h) => (
+                      {["Name", "Age", "Last Visit"].map((h) => (
                         <TableCell
                           key={h}
                           sx={{
@@ -471,9 +471,9 @@ function Dashboard() {
                               color: COLORS.textMuted,
                             }}
                           >
-                            {patient.updated_at
+                            {patient.created_at
                               ? new Date(
-                                  patient.updated_at,
+                                  patient.created_at,
                                 ).toLocaleDateString()
                               : "—"}
                           </TableCell>
