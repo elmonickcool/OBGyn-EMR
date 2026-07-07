@@ -377,7 +377,7 @@ function Dashboard() {
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      {["Name", "Age", "Last Visit"].map((h) => (
+                      {["Name", "Age"].map((h) => (
                         <TableCell
                           key={h}
                           sx={{
