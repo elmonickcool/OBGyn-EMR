@@ -192,19 +192,19 @@ function Dashboard() {
     todayAppointments: 0,
     todayConsultations: 0,
     todayPatients: 0,
+    recentPatients: [],
   });
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
     fetch(`${API_URL}/dashboard`)
-      .then((res) => res.json())
-      .then((data) => setStats(data))
-      .catch(console.error);
+  .then((res) => res.json())
+  .then((data) => {
+    setStats(data);
+    setPatients(data.recentPatients || []);
+  })
+  .catch(console.error);
 
-    fetch(`${API_URL}/patients`)
-      .then((res) => res.json())
-      .then((data) => setPatients(data))
-      .catch(console.error);
 
     fetch(`${API_URL}/dashboard/patients-per-day`)
       .then((res) => res.json())
@@ -376,7 +376,7 @@ function Dashboard() {
                     color: COLORS.textMuted,
                   }}
                 >
-                  {patients.length} on file
+                  {stats.recentPatients?.length || 0} on file
                 </Typography>
               </Stack>
               <Divider sx={{ borderColor: COLORS.border, mb: 1 }} />
