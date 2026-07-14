@@ -127,7 +127,7 @@ app.get("/dashboard", (req, res) => {
 
 app.get("/dashboard/recent-patients", (req, res) => {
   db.query(
-    "SELECT * FROM patients ORDER BY created_at DESC LIMIT 5",
+    "SELECT * FROM patients WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY) ORDER BY created_at DESC",
     (err, results) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json(results);
