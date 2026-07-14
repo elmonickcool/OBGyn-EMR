@@ -196,21 +196,22 @@ function Dashboard() {
   });
   const [patients, setPatients] = useState([]);
 
-  useEffect(() => {
-    fetch(`${API_URL}/dashboard`)
-  .then((res) => res.json())
-  .then((data) => {
-    setStats(data);
-    setPatients(data.recentPatients || []);
-  })
-  .catch(console.error);
+ useEffect(() => {
+  fetch(`${API_URL}/dashboard`)
+    .then((res) => res.json())
+    .then((data) => setStats(data))
+    .catch(console.error);
 
+  fetch(`${API_URL}/dashboard/recent-patients`)
+    .then((res) => res.json())
+    .then((data) => setPatients(data))
+    .catch(console.error);
 
-    fetch(`${API_URL}/dashboard/patients-per-day`)
-      .then((res) => res.json())
-      .then((data) => setPatientChartData(data))
-      .catch(console.error);
-  }, []);
+  fetch(`${API_URL}/dashboard/patients-per-day`)
+    .then((res) => res.json())
+    .then((data) => setPatientChartData(data))
+    .catch(console.error);
+}, []);
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
