@@ -192,7 +192,7 @@ function Dashboard() {
     todayAppointments: 0,
     todayConsultations: 0,
     todayPatients: 0,
-    recentPatients: [],
+    recentPatients: 0,
   });
   const [patients, setPatients] = useState([]);
 
