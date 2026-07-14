@@ -377,7 +377,7 @@ function Dashboard() {
                     color: COLORS.textMuted,
                   }}
                 >
-                  {stats.recentPatients?.length || 0} on file
+                  {patients.length} on file
                 </Typography>
               </Stack>
               <Divider sx={{ borderColor: COLORS.border, mb: 1 }} />
