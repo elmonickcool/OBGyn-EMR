@@ -141,7 +141,7 @@ app.get("/dashboard/patients-per-day", (req, res) => {
       DATE(created_at) AS date,
       COUNT(*) AS patients
     FROM patients
-    WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
     GROUP BY DATE(created_at)
     ORDER BY DATE(created_at);
   `;
