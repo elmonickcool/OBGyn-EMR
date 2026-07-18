@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Container,
-  Grid,
   Paper,
   Typography,
   Stack,
@@ -42,6 +41,7 @@ const COLORS = {
   violet: "#6C3483",
   teal: "#17A398",
   gold: "#F4A950",
+  cyan: "#17A2B8",
   textMuted: "#8C6E7C",
 };
 
@@ -127,8 +127,6 @@ function StatCard({ label, value, icon, gradient }) {
     <Paper
       elevation={0}
       sx={{
-        flex: 1,
-        minWidth: 160,
         p: 2.5,
         borderRadius: 4,
         bgcolor: "rgba(255,255,255,0.85)",
@@ -138,6 +136,7 @@ function StatCard({ label, value, icon, gradient }) {
         display: "flex",
         alignItems: "center",
         gap: 1.75,
+        height: "100%",
       }}
     >
       <Box
@@ -191,27 +190,27 @@ function Dashboard() {
     totalPatients: 0,
     todayAppointments: 0,
     todayConsultations: 0,
-    todayPatients: 0,
-    recentPatients: 0,
+    newPatients: 0,
+    averageAge: 0,
   });
   const [patients, setPatients] = useState([]);
 
- useEffect(() => {
-  fetch(`${API_URL}/dashboard`)
-    .then((res) => res.json())
-    .then((data) => setStats(data))
-    .catch(console.error);
+  useEffect(() => {
+    fetch(`${API_URL}/dashboard`)
+      .then((res) => res.json())
+      .then((data) => setStats(data))
+      .catch(console.error);
 
-  fetch(`${API_URL}/dashboard/recent-patients`)
-    .then((res) => res.json())
-    .then((data) => setPatients(data))
-    .catch(console.error);
+    fetch(`${API_URL}/dashboard/recent-patients`)
+      .then((res) => res.json())
+      .then((data) => setPatients(data))
+      .catch(console.error);
 
-  fetch(`${API_URL}/dashboard/patients-per-day`)
-    .then((res) => res.json())
-    .then((data) => setPatientChartData(data))
-    .catch(console.error);
-}, []);
+    fetch(`${API_URL}/dashboard/patients-per-day`)
+      .then((res) => res.json())
+      .then((data) => setPatientChartData(data))
+      .catch(console.error);
+  }, []);
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -303,12 +302,23 @@ function Dashboard() {
           maxWidth="xl"
           sx={{ position: "relative", zIndex: 1, mt: { xs: 3, md: 4 } }}
         >
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+          <Box
+            sx={{
+              display: "grid",
+              gap: 2,
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(3, 1fr)",
+                lg: "repeat(5, 1fr)",
+              },
+            }}
+          >
             <StatCard
-              label="TotalPatients"
+              label="Total Patients"
               value={stats.totalPatients}
-              icon={<MedicalServicesIcon />}
-              color="linear-gradient(135deg,#10B981,#34D399)"
+              icon={<MedicalServicesIcon fontSize="small" />}
+              gradient="linear-gradient(135deg,#10B981,#34D399)"
             />
             <StatCard
               label="Today's Appointments"
@@ -330,18 +340,24 @@ function Dashboard() {
             />
             <StatCard
               label="Average Patient Age"
-              value={ Math.round(stats.averageAge) }
+              value={Math.round(stats.averageAge) || 0}
               icon={<CakeRoundedIcon fontSize="small" />}
               gradient={`linear-gradient(135deg, ${COLORS.cyan}, #00BFFF)`}
             />
-          </Stack>
+          </Box>
         </Container>
       </Box>
 
       {/* Content */}
-      <Container maxWidth="xl" sx={{ pt: { xs: 5, md: 6 }, pb: 4 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={7}>
+      <Container maxWidth="xl" sx={{ pt: { xs: 5, md: 6 }, pb: 0 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gap: 3,
+            gridTemplateColumns: { xs: "1fr", md: "1fr 2.5fr" },
+          }}
+        >
+          <Box>
             <Paper
               elevation={0}
               sx={{
@@ -349,7 +365,7 @@ function Dashboard() {
                 borderRadius: 4,
                 border: `1px solid ${COLORS.border}`,
                 bgcolor: COLORS.surface,
-                height: 380,
+                height: { xs: 420, md: 520 },
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -492,17 +508,19 @@ function Dashboard() {
                 </Table>
               </TableContainer>
             </Paper>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} md={5}>
+          <Box>
             <Paper
               elevation={0}
               sx={{
-                p: 3,
+                pt: 3,
+                px: 3,
+                pb: 1,
                 borderRadius: 4,
                 border: `1px solid ${COLORS.border}`,
                 bgcolor: COLORS.surface,
-                height: 380,
+                height: { xs: 420, md: 520 },
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -519,11 +537,11 @@ function Dashboard() {
                 Patients Per Day
               </Typography>
               <Divider sx={{ borderColor: COLORS.border, mb: 2 }} />
-              <Box sx={{ flex: 1 }}>
+              <Box sx={{ flex: 1, minHeight: 0, minWidth: 0, width: "100%" }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={patientChartData}
-                    margin={{ top: 4, right: 8, left: -18, bottom: 0 }}
+                    margin={{ top: 4, right: 24, left: -18, bottom: 0 }}
                   >
                     <defs>
                       <linearGradient
@@ -543,6 +561,7 @@ function Dashboard() {
                     />
                     <XAxis
                       dataKey="date"
+                      padding={{ left: 10, right: 10 }}
                       tick={{
                         fontFamily: "'Manrope', sans-serif",
                         fontSize: 11,
@@ -583,8 +602,8 @@ function Dashboard() {
                 </ResponsiveContainer>
               </Box>
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );
