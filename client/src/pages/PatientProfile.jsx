@@ -145,6 +145,23 @@ function PatientProfile() {
   const [socialHistory, setSocialHistory] = useState(null);
   const [gynecologicHistory, setGynecologicHistory] = useState(null);
   const [reviewOfSystems, setReviewOfSystems] = useState(null);
+  const getGestationalAge = (lmp) => {
+  if (!lmp) return "N/A";
+
+  const today = new Date();
+  const lmpDate = new Date(lmp);
+
+  if (isNaN(lmpDate.getTime()) || lmpDate > today) return "N/A";
+
+  const diffDays = Math.floor(
+    (today - lmpDate) / (1000 * 60 * 60 * 24)
+  );
+
+  const weeks = Math.floor(diffDays / 7);
+  const days = diffDays % 7;
+
+  return `${weeks}w ${days}d`;
+};
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -169,6 +186,8 @@ function PatientProfile() {
         console.error(`Failed to fetch ${url}:`, err);
       }
     };
+
+    
 
     const BASE = `${API_URL}`;
     fetchPatient();
@@ -412,6 +431,7 @@ function PatientProfile() {
                 <Grid container spacing={2}>
                   {[
                     { label: "LMP",               value: formatDate(gynecologicHistory.lmp) },
+                    { label: "Gestational Age",   value: getGestationalAge(gynecologicHistory.lmp) },
                     { label: "Cycle",              value: gynecologicHistory.cycle_type ? `${gynecologicHistory.cycle_type}, ${gynecologicHistory.cycle_duration ?? "?"} days` : "N/A" },
                     { label: "Dysmenorrhea",       value: gynecologicHistory.dysmenorrhea ? "Yes" : "No" },
                     { label: "Gravidity / Parity", value: `G${gynecologicHistory.gravidity ?? 0} / P${gynecologicHistory.parity ?? 0}` },
