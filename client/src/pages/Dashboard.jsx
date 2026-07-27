@@ -13,12 +13,14 @@ import {
   TableHead,
   TableRow,
   Divider,
+  Chip,
 } from "@mui/material";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import MonitorHeartRoundedIcon from "@mui/icons-material/MonitorHeartRounded";
 import CakeRoundedIcon from "@mui/icons-material/CakeRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import RepeatRoundedIcon from "@mui/icons-material/RepeatRounded";
 import { API_URL } from "../config.js";
 import {
   ResponsiveContainer,
@@ -194,6 +196,7 @@ function Dashboard() {
     averageAge: 0,
   });
   const [patients, setPatients] = useState([]);
+  const [followUps, setFollowUps] = useState([]);
 
   useEffect(() => {
     fetch(`${API_URL}/dashboard`)
@@ -209,6 +212,11 @@ function Dashboard() {
     fetch(`${API_URL}/dashboard/patients-per-day`)
       .then((res) => res.json())
       .then((data) => setPatientChartData(data))
+      .catch(console.error);
+
+    fetch(`${API_URL}/dashboard/recent-followups`)
+      .then((res) => res.json())
+      .then((data) => setFollowUps(Array.isArray(data) ? data : []))
       .catch(console.error);
   }, []);
 
@@ -349,7 +357,7 @@ function Dashboard() {
       </Box>
 
       {/* Content */}
-      <Container maxWidth="xl" sx={{ pt: { xs: 5, md: 6 }, pb: 0 }}>
+      <Container maxWidth="xl" sx={{ pt: { xs: 5, md: 6 }, pb: 6 }}>
         <Box
           sx={{
             display: "grid",
@@ -603,6 +611,177 @@ function Dashboard() {
               </Box>
             </Paper>
           </Box>
+        </Box>
+
+        {/* Follow-up Consultations */}
+        <Box sx={{ mt: 3 }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: `1px solid ${COLORS.border}`,
+              bgcolor: COLORS.surface,
+            }}
+          >
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="baseline"
+              mb={1}
+            >
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <RepeatRoundedIcon
+                  sx={{ fontSize: 18, color: COLORS.fuchsiaDeep }}
+                />
+                <Typography
+                  sx={{
+                    fontFamily: "'Fraunces', serif",
+                    fontSize: 20,
+                    fontWeight: 700,
+                    color: COLORS.ink,
+                  }}
+                >
+                  Follow-up Consultations
+                </Typography>
+              </Stack>
+              <Typography
+                sx={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: 11,
+                  color: COLORS.textMuted,
+                }}
+              >
+                {followUps.length} recent
+              </Typography>
+            </Stack>
+            <Divider sx={{ borderColor: COLORS.border, mb: 1 }} />
+            <TableContainer sx={{ maxHeight: 360, overflow: "auto" }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    {["Patient", "Follow-up Date", "Notes"].map((h) => (
+                      <TableCell
+                        key={h}
+                        sx={{
+                          fontFamily: "'Manrope', sans-serif",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          letterSpacing: "0.05em",
+                          textTransform: "uppercase",
+                          color: COLORS.textMuted,
+                          borderBottom: `1px solid ${COLORS.border}`,
+                        }}
+                      >
+                        {h}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {followUps.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={3}
+                        align="center"
+                        sx={{
+                          color: COLORS.textMuted,
+                          py: 5,
+                          border: "none",
+                          fontFamily: "'Manrope', sans-serif",
+                        }}
+                      >
+                        No follow-up consultations recorded yet.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    followUps.map((fu) => (
+                      <TableRow
+                        key={fu.id}
+                        sx={{
+                          "&:hover": { bgcolor: "#FDF0F4" },
+                          "& td": {
+                            borderBottom: `1px solid ${COLORS.border}`,
+                            verticalAlign: "top",
+                          },
+                        }}
+                      >
+                        <TableCell>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1.5}
+                          >
+                            <Avatar
+                              sx={{
+                                width: 30,
+                                height: 30,
+                                fontSize: 11,
+                                fontFamily: "'IBM Plex Mono', monospace",
+                                color: "#fff",
+                                background: `linear-gradient(135deg, ${COLORS.fuchsia}, ${COLORS.violet})`,
+                              }}
+                            >
+                              {fu.first_name?.[0]}
+                              {fu.last_name?.[0]}
+                            </Avatar>
+                            <Typography
+                              sx={{
+                                fontFamily: "'Fraunces', serif",
+                                fontSize: 14.5,
+                                color: COLORS.ink,
+                              }}
+                            >
+                              {fu.first_name} {fu.last_name}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          <Chip
+                            size="small"
+                            label={
+                              fu.follow_up_date
+                                ? new Date(
+                                    fu.follow_up_date,
+                                  ).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  })
+                                : "—"
+                            }
+                            sx={{
+                              fontFamily: "'IBM Plex Mono', monospace",
+                              fontSize: 11.5,
+                              fontWeight: 500,
+                              bgcolor: "#FDF0F4",
+                              color: COLORS.fuchsiaDeep,
+                              border: `1px solid ${COLORS.border}`,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            fontFamily: "'Manrope', sans-serif",
+                            fontSize: 13,
+                            color: COLORS.textMuted,
+                            maxWidth: 480,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                          }}
+                        >
+                          {fu.notes || "—"}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
         </Box>
       </Container>
     </Box>
