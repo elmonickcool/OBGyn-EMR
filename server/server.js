@@ -161,6 +161,28 @@ app.get("/dashboard/patients-per-day", (req, res) => {
   });
 });
 
+app.get("/dashboard/recent-followups", (req, res) => {
+  const sql = `
+    SELECT
+      cf.id,
+      cf.patient_id,
+      cf.follow_up_date,
+      cf.notes,
+      cf.created_at,
+      p.first_name,
+      p.last_name
+    FROM consultation_followup cf
+    JOIN patients p ON p.patient_id = cf.patient_id
+    ORDER BY cf.follow_up_date DESC, cf.created_at DESC
+    LIMIT 10
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
 // UPDATE patient
 app.put("/patients/:id", (req, res) => {
   const { first_name, last_name, age, birth_date, address, contact_num } = req.body;
