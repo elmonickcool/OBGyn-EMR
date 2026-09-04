@@ -1,10 +1,11 @@
+require("dotenv").config()
 
 const express = require("express");
 const cors = require("cors");
 const db = require("./db");
 const app = express();
 
-require("dotenv").config()
+
 /* ================= MIDDLEWARE ================= */
 app.use(cors());
 app.use(express.json());
@@ -13,11 +14,17 @@ app.use(express.json());
 /* ================= PATIENTS ================= */
 
 // GET all patients
-app.get("/patients", (req, res) => {
-  db.query("SELECT * FROM patients ORDER BY patient_id DESC ", (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+app.get("/patients", async (req, res) => {
+  try {
+    const [results] = await db.query(
+      "SELECT * FROM patients ORDER BY patient_id DESC"
+    );
+
     res.json(results);
-  });
+  } catch (err) {
+    console.error("GET /patients error:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get("/", (req, res) => {
@@ -39,6 +46,26 @@ app.get("/patients/:id", (req, res) => {
       res.json(results[0]);
     }
   );
+});
+
+// GET patient by follow-up ID
+app.get("/consultation-followups/", async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        id,
+        patient_id,
+        follow_up_date,
+        notes
+      FROM consultation_followup
+      ORDER BY follow_up_date ASC
+    `);
+
+    res.json(rows);
+  } catch (error) {
+    console.error("Error fetching follow-ups:", error);
+    res.status(500).json({ message: "Failed to fetch follow-ups" });
+  }
 });
 /* ================= DASHBOARD ================= */
 
@@ -280,3 +307,6 @@ const PORT = process.env.PORT||3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
+console.log("USER:", process.env.DB_USER);
+console.log("PASSWORD:", process.env.DB_PASSWORD ? "LOADED" : "MISSING");
+console.log("DATABASE:", process.env.DB_NAME);
