@@ -1,10 +1,10 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
 const db = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "medical_records",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
@@ -13,13 +13,13 @@ const db = mysql.createPool({
   keepAliveInitialDelay: 10000,
 });
 
-db.getConnection((err, connection) => {
-  if (err) {
-    console.error("Database connection error:", err);
-  } else {
-    console.log("Connected to database");
+db.getConnection()
+  .then((connection) => {
+    console.log("✅ Connected to database");
     connection.release();
-  }
-});
+  })
+  .catch((err) => {
+    console.error("❌ Database connection error:", err);
+  });
 
 module.exports = db;
