@@ -13,6 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { useCallback, useState } from "react";
 import logoSrc from "../assets/Doc_Rikka_Logo.png";
 
@@ -37,6 +38,7 @@ const TOPBAR_HEIGHT = 60;
 
 const navLinks = [
   { to: "/", label: "Patients", icon: PeopleIcon },
+  { to: "/appointments", label: "Appointments", icon: CalendarTodayIcon },
   { to: "/add-patient", label: "Add Patient", icon: PersonAddIcon },
   { to: "/dashboard", label: "Dashboard", icon: DashboardIcon },
 ];
@@ -78,18 +80,8 @@ function ClinicHeader({ isMobile, onClose }) {
             justifyContent: "center",
             flexShrink: 0,
             p: 0.75,
-            background: `linear-gradient(135deg, ${t.fuchsia} 0%, ${t.violet} 100%)`,
             border: "1px solid rgba(255,255,255,0.18)",
-            boxShadow: `0 6px 20px ${t.fuchsia}45, inset 0 1px 0 rgba(255,255,255,0.18)`,
-            transition: "transform 0.18s ease, box-shadow 0.18s ease",
-            "&:hover": {
-              transform: "scale(1.04)",
-              boxShadow: `0 8px 24px ${t.fuchsia}5C, inset 0 1px 0 rgba(255,255,255,0.18)`,
-            },
-            "&:focus-visible": {
-              outline: `2px solid #fff`,
-              outlineOffset: 2,
-            },
+            
           }}
         >
           <Box
@@ -101,7 +93,6 @@ function ClinicHeader({ isMobile, onClose }) {
               height: "150%",
               objectFit: "contain",
               display: "block",
-              filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.25))",
             }}
           />
         </Box>
@@ -127,7 +118,7 @@ function ClinicHeader({ isMobile, onClose }) {
               mt: 0.35,
               fontSize: 9.5,
               fontWeight: 600,
-              color: "rgba(255,255,255,0.48)",
+              color: "rgba(255,255,255,0.55)",
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               whiteSpace: "nowrap",
@@ -136,23 +127,6 @@ function ClinicHeader({ isMobile, onClose }) {
             Women's Medical Clinic
           </Typography>
 
-          <Stack direction="row" alignItems="center" spacing={0.6} sx={{ mt: 0.8 }}>
-            <Box
-              sx={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: t.online,
-                boxShadow: `0 0 8px ${t.online}B3`,
-              }}
-              aria-hidden="true"
-            />
-            <Typography
-              sx={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.4)" }}
-            >
-              EMR SYSTEM ONLINE
-            </Typography>
-          </Stack>
         </Box>
       </Stack>
 
@@ -161,7 +135,7 @@ function ClinicHeader({ isMobile, onClose }) {
           mt: 2.5,
           height: "1px",
           background:
-            "linear-gradient(90deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 55%, transparent 100%)",
+            "linear-gradient(90deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 55%, transparent 100%)",
         }}
       />
     </Box>
@@ -192,14 +166,14 @@ function SidebarNav({ isActive, isMobile, onNavigate }) {
                 mb: 0.5,
                 borderRadius: 2.5,
                 background: active
-                  ? `#ff2ba6`
+                  ? `linear-gradient(135deg, ${t.fuchsia} 0%, ${t.violet} 100%)`
                   : "transparent",
-                border: active ? `1px solid ${t.fuchsia}55` : "1px solid transparent",
-                boxShadow: active ? `0 4px 16px ${t.fuchsia}44` : "none",
+                border: active ? `1px solid rgba(255,255,255,0.25)` : "1px solid transparent",
+                boxShadow: active ? `0 4px 16px ${t.fuchsia}55` : "none",
                 transition: "all 0.18s ease",
                 "&:hover": !active && {
-                  background: "rgba(255,255,255,0.07)",
-                  border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.14)",
                 },
                 "&:focus-visible": {
                   outline: `2px solid ${t.fuchsia}`,
@@ -211,13 +185,15 @@ function SidebarNav({ isActive, isMobile, onNavigate }) {
                 sx={{
                   fontSize: 18,
                   lineHeight: 1,
-                  color: active ? "#fff" : "rgba(255,255,255,0.6)",
-                }} aria-hidden="true" />
+                  color: active ? "#fff" : "rgba(255,255,255,0.65)",
+                }}
+                aria-hidden="true"
+              />
               <Typography
                 sx={{
                   fontSize: 13,
                   fontWeight: active ? 700 : 500,
-                  color: active ? "#fff" : "rgba(255,255,255,0.6)",
+                  color: active ? "#fff" : "rgba(255,255,255,0.65)",
                   letterSpacing: active ? "0" : "0.01em",
                 }}
               >
@@ -251,7 +227,7 @@ function Sidebar({ isActive, isMobile, onClose }) {
       sx={{
         width: SIDEBAR_WIDTH,
         height: "100%",
-        background: "linear-gradient(175deg, #6b155d 0%, #ac1818 60%, #c2005a 100%)",
+        background: `linear-gradient(165deg, ${t.ink} 0%, #2A0A4A 55%, #3A0F52 100%)`,
         display: "flex",
         flexDirection: "column",
         position: "relative",
@@ -266,7 +242,7 @@ function Sidebar({ isActive, isMobile, onClose }) {
           width: 200,
           height: 200,
           borderRadius: "50%",
-          background: `radial-gradient(circle, #c2005a 25%, transparent 70%)`,
+          background: `radial-gradient(circle, ${t.fuchsia}30 0%, transparent 70%)`,
           pointerEvents: "none",
         }}
         aria-hidden="true"
@@ -279,7 +255,7 @@ function Sidebar({ isActive, isMobile, onClose }) {
           width: 150,
           height: 150,
           borderRadius: "50%",
-          background: `radial-gradient(circle, ${t.violet}22 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${t.violet}25 0%, transparent 70%)`,
           pointerEvents: "none",
         }}
         aria-hidden="true"
@@ -293,7 +269,7 @@ function Sidebar({ isActive, isMobile, onClose }) {
           mb: 1,
           fontSize: 10,
           fontWeight: 700,
-          color: "rgba(255,255,255,0.3)",
+          color: "rgba(255,255,255,0.35)",
           letterSpacing: "0.12em",
           textTransform: "uppercase",
         }}
@@ -303,8 +279,8 @@ function Sidebar({ isActive, isMobile, onClose }) {
 
       <SidebarNav isActive={isActive} isMobile={isMobile} onNavigate={onClose} />
 
-      <Box sx={{ px: 3, py: 2.5, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-        <Typography sx={{ fontSize: 10, color: "rgba(255,255,255,0.25)", fontWeight: 500 }}>
+      <Box sx={{ px: 3, py: 2.5, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <Typography sx={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>
           EMR System v1.0
         </Typography>
       </Box>
