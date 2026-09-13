@@ -7,6 +7,7 @@ import {
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { API_URL } from "../config";
+import {PersonAdd as PersonAddIcon} from "@mui/icons-material";
 
 // ─── Shared Vibrant Tokens ─────────────────────────────────────────────────
 const t = {
@@ -213,7 +214,7 @@ function PlasmaSuccess({ patient, onRegisterAnother, onGoHome, sessionCount }) {
                   transition: "all 0.2s",
                 }}
               >
-                🌸 &nbsp; Register Another Patient
+                <PersonAddIcon /> Register Another Patient
               </Button>
               <Button
                 fullWidth
@@ -551,7 +552,7 @@ function AddPatient() {
                 transition: "all 0.2s",
               }}
             >
-              {loading ? "Registering…" : "🌸  Register Patient"}
+              {loading ? "Registering…" : " <PersonAddIcon /> Register Patient"}
             </Button>
           </Stack>
         </Box>
